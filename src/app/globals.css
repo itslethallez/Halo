@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-sand-50 text-ink-900 antialiased;
+}
+
+.card {
+  @apply rounded-xl2 border border-black/10 bg-white shadow-sm;
+}
+
+.status-pill {
+  @apply inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium;
+}

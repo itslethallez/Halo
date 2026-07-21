@@ -1,0 +1,901 @@
+// TrueReach — Prisma schema
+// See /docs/02-database-schema.md for the narrative description of this file.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Enums
+// ─────────────────────────────────────────────────────────────────────────
+
+enum Role {
+  ADMIN
+  WORKER
+  DRIVER
+  CLIENT
+}
+
+enum ToneStyle {
+  WARM_FRIENDLY
+  PROFESSIONAL
+  CASUAL
+  BRIEF_DIRECT
+  CUSTOM
+}
+
+enum WorkerEarningsModel {
+  COMMISSION
+  FLAT_RATE
+}
+
+enum CalendarProvider {
+  GOOGLE
+}
+
+enum BlockedTimeType {
+  BLACKOUT
+  HOLIDAY
+  PERSONAL
+}
+
+enum BookingStatus {
+  NEW_ENQUIRY
+  AVAILABILITY_OFFERED
+  AWAITING_CLIENT_RESPONSE
+  AWAITING_DEPOSIT
+  AWAITING_WORKER_APPROVAL
+  CONFIRMED
+  DRIVER_REQUIRED
+  DRIVER_ASSIGNED
+  WORKER_EN_ROUTE
+  WORKER_ARRIVED
+  SERVICE_IN_PROGRESS
+  SERVICE_COMPLETED
+  AWAITING_WORKER_SURVEY
+  AWAITING_CLIENT_SURVEY
+  FULLY_COMPLETED
+  CANCELLED
+  NO_SHOW
+  SAFETY_REVIEW
+  BLOCKED
+}
+
+enum MessageSender {
+  AI
+  WORKER
+  CLIENT
+  SYSTEM
+}
+
+enum ClientSafetyStatus {
+  TRUSTED
+  STANDARD
+  MONITOR
+  MANUAL_REVIEW_REQUIRED
+  RESTRICTED
+  DO_NOT_BOOK
+  BLOCKED_PENDING_INVESTIGATION
+}
+
+enum RestrictionType {
+  DRIVER_MUST_REMAIN_NEARBY
+  DAYTIME_APPOINTMENTS_ONLY
+  FULL_PAYMENT_IN_ADVANCE
+  DEPOSIT_REQUIRED
+  HOTEL_RECEPTION_VERIFICATION_REQUIRED
+  ADDRESS_MUST_BE_CONFIRMED_BEFORE_TRAVEL
+  NO_ADDRESS_CHANGES_AFTER_CONFIRMATION
+  WORKER_MUST_SPEAK_BEFORE_APPROVAL
+  MANUAL_ADMIN_APPROVAL_REQUIRED
+  DO_NOT_ALLOCATE_SAME_WORKER
+  DO_NOT_ACCEPT_FUTURE_BOOKINGS
+  CUSTOM
+}
+
+enum WorkerSafetyQ1 {
+  YES_COMPLETELY
+  MOSTLY
+  SLIGHTLY_UNCOMFORTABLE
+  FELT_UNSAFE
+}
+
+enum WorkerSafetyQ2 {
+  YES_COMPLETELY
+  MOSTLY
+  MINOR_CONCERNS
+  INAPPROPRIATE_BEHAVIOUR
+}
+
+enum WorkerSafetyQ3 {
+  ACCURATE
+  MOSTLY_ACCURATE
+  SOME_DETAILS_DIFFERENT
+  MISLEADING
+}
+
+enum WorkerSafetyQ4 {
+  NO_ISSUES
+  MINOR_ISSUE
+  SIGNIFICANT_ISSUE
+  SERIOUS_INCIDENT
+}
+
+enum WorkerSafetyQ5 {
+  YES
+  YES_WITH_CONDITIONS
+  MANUAL_APPROVAL_REQUIRED
+  NO_DO_NOT_ACCEPT
+}
+
+enum ClientSatisfactionQ1 {
+  VERY_SATISFIED
+  SATISFIED
+  NEUTRAL
+  DISSATISFIED
+  VERY_DISSATISFIED
+}
+
+enum ClientSatisfactionQ2 {
+  ON_TIME
+  SLIGHTLY_OFF
+  SIGNIFICANTLY_OFF
+  DID_NOT_PROCEED
+}
+
+enum ClientSatisfactionQ3 {
+  YES_COMPLETELY
+  MOSTLY
+  NEEDS_IMPROVEMENT
+  NO
+}
+
+enum ClientSatisfactionQ4 {
+  YES_COMPLETELY
+  MOSTLY
+  NOT_ENTIRELY
+  NO
+}
+
+enum ClientSatisfactionQ5 {
+  DEFINITELY
+  PROBABLY
+  UNSURE
+  PROBABLY_NOT
+  DEFINITELY_NOT
+}
+
+enum IncidentSource {
+  WORKER_SURVEY
+  CLIENT_FEEDBACK
+  MANUAL_REPORT
+}
+
+enum IncidentSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum DriverJobLegType {
+  OUTBOUND
+  RETURN
+}
+
+enum DriverJobStatus {
+  UNASSIGNED
+  OFFERED
+  ACCEPTED
+  DECLINED
+  EN_ROUTE_TO_WORKER
+  WORKER_COLLECTED
+  ARRIVED_AT_DESTINATION
+  WAITING
+  RETURN_TRIP_STARTED
+  WORKER_RETURNED
+  COMPLETED
+  CANCELLED
+}
+
+enum DriverPreference {
+  PREFERRED
+  NOT_PREFERRED
+}
+
+enum PaymentType {
+  DEPOSIT
+  BALANCE
+  TIP
+  FULL_PAYMENT
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+enum ExpenseCategory {
+  FUEL
+  SUPPLIES
+  DRIVER_PAYMENT
+  PLATFORM_FEE
+  OTHER
+}
+
+enum NotificationType {
+  NEW_ENQUIRY
+  BOOKING_REQUEST
+  BOOKING_CONFIRMATION
+  DEPOSIT_REQUEST
+  PAYMENT_CONFIRMATION
+  APPOINTMENT_REMINDER
+  DRIVER_ASSIGNMENT
+  DRIVER_ARRIVAL
+  SAFETY_CHECKIN_REMINDER
+  MISSED_CHECKIN_ALERT
+  SURVEY_REMINDER
+  CANCELLATION
+  MANUAL_REVIEW
+  INCIDENT_REVIEW
+}
+
+enum NotificationChannel {
+  PUSH
+  EMAIL
+  SMS
+  IN_APP
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+  READ
+}
+
+enum ConsentPolicyType {
+  PRIVACY_POLICY
+  TERMS_OF_SERVICE
+}
+
+enum CorrectionRequestStatus {
+  OPEN
+  IN_REVIEW
+  RESOLVED
+  REJECTED
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Identity & tenancy
+// ─────────────────────────────────────────────────────────────────────────
+
+model Business {
+  id                             String              @id @default(cuid())
+  name                           String
+  timezone                       String              @default("Australia/Sydney")
+  workerEarningsModel            WorkerEarningsModel @default(COMMISSION)
+  platformFeeCents               Int                 @default(0)
+  autoOfferTopDriver             Boolean             @default(false)
+  shareSafetyStatusAcrossWorkers Boolean             @default(false)
+  driverScoringWeights           Json?
+  dataRetentionPolicy            Json?
+  createdAt                      DateTime            @default(now())
+  updatedAt                      DateTime            @updatedAt
+
+  users           User[]
+  workers         Worker[]
+  drivers         Driver[]
+  clients         Client[]
+  services        Service[]
+  bookings        Booking[]
+  conversations   Conversation[]
+  driverJobs      DriverJob[]
+  payments        Payment[]
+  expenses        Expense[]
+  notifications   Notification[]
+  auditLogs       AuditLog[]
+  safetyIncidents SafetyIncident[]
+}
+
+model User {
+  id                  String    @id @default(cuid())
+  businessId          String
+  business            Business  @relation(fields: [businessId], references: [id])
+  email               String    @unique
+  passwordHash        String
+  name                String
+  phone               String?
+  role                Role
+  totpSecretEncrypted String?
+  totpEnabled         Boolean   @default(false)
+  active              Boolean   @default(true)
+  lastLoginAt         DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  worker Worker?
+  driver Driver?
+  client Client?
+
+  consentRecords ConsentRecord[]
+
+  @@index([businessId])
+}
+
+model ConsentRecord {
+  id         String            @id @default(cuid())
+  userId     String
+  user       User              @relation(fields: [userId], references: [id])
+  policyType ConsentPolicyType
+  version    String
+  acceptedAt DateTime          @default(now())
+
+  @@index([userId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// People
+// ─────────────────────────────────────────────────────────────────────────
+
+model Worker {
+  id                      String    @id @default(cuid())
+  userId                  String    @unique
+  user                    User      @relation(fields: [userId], references: [id])
+  businessId              String
+  business                Business  @relation(fields: [businessId], references: [id])
+  displayName             String
+  bio                     String?
+  toneStyle               ToneStyle @default(WARM_FRIENDLY)
+  customToneDescription   String?
+  escalationRules         Json?
+  homeAddressEncrypted    String?
+  distressPhraseEncrypted String?
+  trustedContactName      String?
+  trustedContactPhone     String?
+  commissionRate          Float?    @default(0.7)
+  flatRatePerServiceCents Int?
+  minimumNoticeHours      Int       @default(24)
+  maximumAdvanceDays      Int       @default(60)
+  maxJobsPerDay           Int       @default(6)
+  maxWorkingHoursPerDay   Int       @default(10)
+  defaultSetupMinutes     Int       @default(15)
+  defaultPackDownMinutes  Int       @default(15)
+  minTravelBufferMinutes  Int       @default(15)
+  maxTravelDistanceKm     Float     @default(30)
+  approvedSuburbs         String[]
+  autoApproveBookings     Boolean   @default(true)
+  active                  Boolean   @default(true)
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+
+  workerServices      WorkerService[]
+  availability        WorkerAvailability[]
+  blockedTimes        BlockedTime[]
+  calendarConnections CalendarConnection[]
+  bookings            Booking[]
+  conversations       Conversation[]
+  driverJobs          DriverJob[]
+  safetySurveys       WorkerSafetySurvey[]
+  driverPreferences   WorkerDriverPreference[]
+  safetyIncidents     SafetyIncident[]
+
+  @@index([businessId])
+}
+
+model Service {
+  id                    String   @id @default(cuid())
+  businessId            String
+  business              Business @relation(fields: [businessId], references: [id])
+  name                  String
+  description           String?
+  baseDurationMinutes   Int
+  basePriceCents        Int
+  requiresDriverDefault Boolean  @default(false)
+  active                Boolean  @default(true)
+  createdAt             DateTime @default(now())
+
+  workerServices WorkerService[]
+  bookings       Booking[]
+
+  @@index([businessId])
+}
+
+model WorkerService {
+  id                      String  @id @default(cuid())
+  workerId                String
+  worker                  Worker  @relation(fields: [workerId], references: [id])
+  serviceId               String
+  service                 Service @relation(fields: [serviceId], references: [id])
+  priceCentsOverride      Int?
+  durationMinutesOverride Int?
+  active                  Boolean @default(true)
+
+  @@unique([workerId, serviceId])
+}
+
+model WorkerAvailability {
+  id               String @id @default(cuid())
+  workerId         String
+  worker           Worker @relation(fields: [workerId], references: [id])
+  dayOfWeek        Int // 0 = Sunday .. 6 = Saturday
+  startMinute      Int // minutes from midnight
+  endMinute        Int
+  breakStartMinute Int?
+  breakEndMinute   Int?
+
+  @@index([workerId, dayOfWeek])
+}
+
+model BlockedTime {
+  id        String          @id @default(cuid())
+  workerId  String
+  worker    Worker          @relation(fields: [workerId], references: [id])
+  startAt   DateTime
+  endAt     DateTime
+  type      BlockedTimeType
+  reason    String?
+  createdAt DateTime        @default(now())
+
+  @@index([workerId, startAt, endAt])
+}
+
+model CalendarConnection {
+  id                    String           @id @default(cuid())
+  workerId              String
+  worker                Worker           @relation(fields: [workerId], references: [id])
+  provider              CalendarProvider
+  accessTokenEncrypted  String
+  refreshTokenEncrypted String?
+  expiresAt             DateTime?
+  calendarId            String?
+  syncCursor            String?
+  connectedAt           DateTime         @default(now())
+
+  @@unique([workerId, provider])
+}
+
+model Driver {
+  id                 String   @id @default(cuid())
+  userId             String   @unique
+  user               User     @relation(fields: [userId], references: [id])
+  businessId         String
+  business           Business @relation(fields: [businessId], references: [id])
+  vehicleDescription String?
+  serviceAreas       String[]
+  maxConcurrentJobs  Int      @default(1)
+  ratingAverage      Float    @default(5.0)
+  ratingCount        Int      @default(0)
+  canRemainNearby    Boolean  @default(true)
+  active             Boolean  @default(true)
+  createdAt          DateTime @default(now())
+
+  availability      DriverAvailability[]
+  driverJobs        DriverJob[]
+  driverPreferences WorkerDriverPreference[]
+  driverPayments    DriverPayment[]
+
+  @@index([businessId])
+}
+
+model DriverAvailability {
+  id          String @id @default(cuid())
+  driverId    String
+  driver      Driver @relation(fields: [driverId], references: [id])
+  dayOfWeek   Int
+  startMinute Int
+  endMinute   Int
+
+  @@index([driverId, dayOfWeek])
+}
+
+model WorkerDriverPreference {
+  id         String           @id @default(cuid())
+  workerId   String
+  worker     Worker           @relation(fields: [workerId], references: [id])
+  driverId   String
+  driver     Driver           @relation(fields: [driverId], references: [id])
+  preference DriverPreference
+
+  @@unique([workerId, driverId])
+}
+
+model Client {
+  id              String             @id @default(cuid())
+  businessId      String
+  business        Business           @relation(fields: [businessId], references: [id])
+  userId          String?            @unique
+  user            User?              @relation(fields: [userId], references: [id])
+  fullName        String
+  phone           String
+  email           String?
+  verifiedContact Boolean            @default(false)
+  safetyStatus    ClientSafetyStatus @default(STANDARD)
+  internalNotes   String?
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  addresses           ClientAddress[]
+  bookings            Booking[]
+  conversations       Conversation[]
+  satisfactionSurveys ClientSatisfactionSurvey[]
+  restrictions        ClientRestriction[]
+  safetyStatusHistory ClientSafetyStatusHistory[]
+  safetyIncidents     SafetyIncident[]
+  correctionRequests  DataCorrectionRequest[]
+
+  @@index([businessId])
+  @@index([phone])
+}
+
+model ClientAddress {
+  id          String   @id @default(cuid())
+  clientId    String
+  client      Client   @relation(fields: [clientId], references: [id])
+  line1       String
+  line2       String?
+  suburb      String
+  state       String
+  postcode    String
+  country     String   @default("AU")
+  isPrimary   Boolean  @default(false)
+  firstUsedAt DateTime @default(now())
+  lastUsedAt  DateTime @default(now())
+
+  bookings Booking[]
+
+  @@index([clientId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Booking lifecycle
+// ─────────────────────────────────────────────────────────────────────────
+
+model Booking {
+  id                   String         @id @default(cuid())
+  businessId           String
+  business             Business       @relation(fields: [businessId], references: [id])
+  clientId             String
+  client               Client         @relation(fields: [clientId], references: [id])
+  workerId             String
+  worker               Worker         @relation(fields: [workerId], references: [id])
+  serviceId            String
+  service              Service        @relation(fields: [serviceId], references: [id])
+  addressId            String?
+  address              ClientAddress? @relation(fields: [addressId], references: [id])
+  status               BookingStatus  @default(NEW_ENQUIRY)
+  requestedStart       DateTime?
+  confirmedStart       DateTime?
+  confirmedEnd         DateTime?
+  travelMinutes        Int?
+  setupMinutes         Int?
+  packDownMinutes      Int?
+  requiresDriver       Boolean        @default(false)
+  workerSurveyDone     Boolean        @default(false)
+  clientSurveyDone     Boolean        @default(false)
+  depositRequiredCents Int            @default(0)
+  cancelReason         String?
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+
+  statusHistory            BookingStatusHistory[]
+  conversations            Conversation[]
+  driverJobs               DriverJob[]
+  payments                 Payment[]
+  expenses                 Expense[]
+  workerSafetySurvey       WorkerSafetySurvey?
+  clientSatisfactionSurvey ClientSatisfactionSurvey?
+  safetyIncidents          SafetyIncident[]
+
+  @@index([workerId, confirmedStart])
+  @@index([businessId, status])
+  @@index([clientId])
+}
+
+model BookingStatusHistory {
+  id              String         @id @default(cuid())
+  bookingId       String
+  booking         Booking        @relation(fields: [bookingId], references: [id])
+  fromStatus      BookingStatus?
+  toStatus        BookingStatus
+  changedByUserId String?
+  reason          String?
+  createdAt       DateTime       @default(now())
+
+  @@index([bookingId, createdAt])
+}
+
+model Conversation {
+  id                String   @id @default(cuid())
+  businessId        String
+  business          Business @relation(fields: [businessId], references: [id])
+  clientId          String
+  client            Client   @relation(fields: [clientId], references: [id])
+  workerId          String?
+  worker            Worker?  @relation(fields: [workerId], references: [id])
+  bookingId         String?
+  booking           Booking? @relation(fields: [bookingId], references: [id])
+  needsHuman        Boolean  @default(false)
+  escalationReason  String?
+  takenOverByUserId String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  messages Message[]
+
+  @@index([businessId])
+  @@index([clientId])
+}
+
+model Message {
+  id             String        @id @default(cuid())
+  conversationId String
+  conversation   Conversation  @relation(fields: [conversationId], references: [id])
+  sender         MessageSender
+  senderUserId   String?
+  body           String
+  createdAt      DateTime      @default(now())
+
+  @@index([conversationId, createdAt])
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Safety
+// ─────────────────────────────────────────────────────────────────────────
+
+model WorkerSafetySurvey {
+  id                    String            @id @default(cuid())
+  bookingId             String            @unique
+  booking               Booking           @relation(fields: [bookingId], references: [id])
+  workerId              String
+  worker                Worker            @relation(fields: [workerId], references: [id])
+  q1SafeAndComfortable  WorkerSafetyQ1
+  q2RespectedBoundaries WorkerSafetyQ2
+  q3BookingAccurate     WorkerSafetyQ3
+  q4IssueSeverity       WorkerSafetyQ4
+  q5FutureBookings      WorkerSafetyQ5
+  additionalConditions  RestrictionType[]
+  customConditionText   String?
+  privateNotesEncrypted String?
+  createdAt             DateTime          @default(now())
+
+  @@index([workerId])
+}
+
+model ClientSatisfactionSurvey {
+  id                    String               @id @default(cuid())
+  bookingId             String               @unique
+  booking               Booking              @relation(fields: [bookingId], references: [id])
+  clientId              String
+  client                Client               @relation(fields: [clientId], references: [id])
+  q1Satisfaction        ClientSatisfactionQ1
+  q2Punctuality         ClientSatisfactionQ2
+  q3Professionalism     ClientSatisfactionQ3
+  q4MatchedExpectations ClientSatisfactionQ4
+  q5WouldReturn         ClientSatisfactionQ5
+  comments              String?
+  contactMeBack         Boolean              @default(false)
+  createdAt             DateTime             @default(now())
+
+  @@index([clientId])
+}
+
+model SafetyIncident {
+  id               String           @id @default(cuid())
+  businessId       String
+  business         Business         @relation(fields: [businessId], references: [id])
+  clientId         String?
+  client           Client?          @relation(fields: [clientId], references: [id])
+  workerId         String?
+  worker           Worker?          @relation(fields: [workerId], references: [id])
+  bookingId        String?
+  booking          Booking?         @relation(fields: [bookingId], references: [id])
+  source           IncidentSource
+  severity         IncidentSeverity
+  description      String
+  reportedByUserId String?
+  resolved         Boolean          @default(false)
+  resolvedByUserId String?
+  resolvedAt       DateTime?
+  createdAt        DateTime         @default(now())
+
+  @@index([businessId, resolved])
+  @@index([clientId])
+}
+
+model ClientRestriction {
+  id              String          @id @default(cuid())
+  clientId        String
+  client          Client          @relation(fields: [clientId], references: [id])
+  type            RestrictionType
+  customText      String?
+  createdByUserId String
+  createdAt       DateTime        @default(now())
+  expiresAt       DateTime?
+  active          Boolean         @default(true)
+
+  @@index([clientId, active])
+}
+
+model ClientSafetyStatusHistory {
+  id              String              @id @default(cuid())
+  clientId        String
+  client          Client              @relation(fields: [clientId], references: [id])
+  fromStatus      ClientSafetyStatus?
+  toStatus        ClientSafetyStatus
+  reason          String
+  changedByUserId String?
+  createdAt       DateTime            @default(now())
+
+  @@index([clientId, createdAt])
+}
+
+model DataCorrectionRequest {
+  id                String                  @id @default(cuid())
+  clientId          String
+  client            Client                  @relation(fields: [clientId], references: [id])
+  requestedByUserId String
+  description       String
+  status            CorrectionRequestStatus @default(OPEN)
+  resolutionNotes   String?
+  resolvedByUserId  String?
+  resolvedAt        DateTime?
+  createdAt         DateTime                @default(now())
+
+  @@index([clientId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Driver dispatch
+// ─────────────────────────────────────────────────────────────────────────
+
+model DriverJob {
+  id                      String            @id @default(cuid())
+  businessId              String
+  business                Business          @relation(fields: [businessId], references: [id])
+  bookingId               String
+  booking                 Booking           @relation(fields: [bookingId], references: [id])
+  workerId                String
+  worker                  Worker            @relation(fields: [workerId], references: [id])
+  driverId                String?
+  driver                  Driver?           @relation(fields: [driverId], references: [id])
+  legType                 DriverJobLegType  @default(OUTBOUND)
+  pickupAddress           String
+  destinationAddress      String
+  scheduledStart          DateTime
+  estimatedTravelMinutes  Int
+  estimatedWaitingMinutes Int?
+  returnTripRequired      Boolean           @default(false)
+  driverPaymentCents      Int               @default(0)
+  specialInstructions     String?
+  safetyRequirements      RestrictionType[]
+  status                  DriverJobStatus   @default(UNASSIGNED)
+  offeredAt               DateTime?
+  acceptedAt              DateTime?
+  createdAt               DateTime          @default(now())
+  updatedAt               DateTime          @updatedAt
+
+  statusHistory DriverStatusHistory[]
+  driverPayment DriverPayment?
+
+  @@index([driverId, status])
+  @@index([bookingId])
+}
+
+model DriverStatusHistory {
+  id              String           @id @default(cuid())
+  driverJobId     String
+  driverJob       DriverJob        @relation(fields: [driverJobId], references: [id])
+  fromStatus      DriverJobStatus?
+  toStatus        DriverJobStatus
+  changedByUserId String?
+  createdAt       DateTime         @default(now())
+
+  @@index([driverJobId, createdAt])
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Money
+// ─────────────────────────────────────────────────────────────────────────
+
+model Payment {
+  id                  String        @id @default(cuid())
+  businessId          String
+  business            Business      @relation(fields: [businessId], references: [id])
+  bookingId           String
+  booking             Booking       @relation(fields: [bookingId], references: [id])
+  type                PaymentType
+  amountCents         Int
+  feeCents            Int           @default(0)
+  status              PaymentStatus @default(PENDING)
+  providerReferenceId String?
+  createdAt           DateTime      @default(now())
+
+  refunds Refund[]
+
+  @@index([bookingId])
+  @@index([businessId, status])
+}
+
+model Refund {
+  id          String   @id @default(cuid())
+  paymentId   String
+  payment     Payment  @relation(fields: [paymentId], references: [id])
+  amountCents Int
+  reason      String?
+  createdAt   DateTime @default(now())
+
+  @@index([paymentId])
+}
+
+model Expense {
+  id          String          @id @default(cuid())
+  businessId  String
+  business    Business        @relation(fields: [businessId], references: [id])
+  bookingId   String?
+  booking     Booking?        @relation(fields: [bookingId], references: [id])
+  category    ExpenseCategory
+  amountCents Int
+  description String?
+  createdAt   DateTime        @default(now())
+
+  @@index([businessId, category])
+  @@index([bookingId])
+}
+
+model DriverPayment {
+  id          String    @id @default(cuid())
+  driverJobId String    @unique
+  driverJob   DriverJob @relation(fields: [driverJobId], references: [id])
+  driverId    String
+  driver      Driver    @relation(fields: [driverId], references: [id])
+  amountCents Int
+  paidAt      DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@index([driverId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Notifications & audit
+// ─────────────────────────────────────────────────────────────────────────
+
+model Notification {
+  id         String              @id @default(cuid())
+  businessId String
+  business   Business            @relation(fields: [businessId], references: [id])
+  userId     String
+  type       NotificationType
+  channel    NotificationChannel
+  payload    Json
+  status     NotificationStatus  @default(PENDING)
+  sentAt     DateTime?
+  readAt     DateTime?
+  createdAt  DateTime            @default(now())
+
+  @@index([userId, status])
+  @@index([businessId, createdAt])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  businessId  String
+  business    Business @relation(fields: [businessId], references: [id])
+  actorUserId String?
+  action      String
+  entityType  String
+  entityId    String?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  @@index([businessId, createdAt])
+  @@index([entityType, entityId])
+}
