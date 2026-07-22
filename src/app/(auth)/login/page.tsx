@@ -11,7 +11,7 @@ export default function LoginPage() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-8 bg-bg px-4">
-      <HaloLogo variant="full" size={56} />
+      <HaloLogo variant="full" size={220} />
 
       <div className="card w-full max-w-sm p-8">
         <h1 className="text-xl font-semibold text-text">Sign in</h1>

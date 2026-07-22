@@ -6,7 +6,7 @@ export default function LandingPage() {
   return (
     <main className="min-h-screen bg-bg">
       <div className="mx-auto max-w-4xl px-6 py-20">
-        <HaloLogo variant="full" size={72} tagline />
+        <HaloLogo variant="full" size={340} tagline />
         <h1 className="mt-10 text-4xl font-semibold text-text sm:text-5xl">
           Booking, safety and business management for mobile massage.
         </h1>
