@@ -17,7 +17,7 @@ export function DashboardShell({
 }) {
   return (
     <div className="min-h-screen bg-bg">
-      <div className="flex items-center justify-between border-b border-border-muted bg-surface px-4 py-3 sm:px-8">
+      <div className="sticky top-0 z-40 flex items-center justify-between border-b border-border-muted bg-surface px-4 pb-3 pt-[calc(env(safe-area-inset-top)_+_0.75rem)] sm:px-8">
         <Link href="/" className="flex items-center gap-2">
           <HaloLogo size={24} />
           <span className="font-display text-base tracking-[0.15em] text-text">HALO</span>
