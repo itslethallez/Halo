@@ -95,7 +95,7 @@ export default async function DriverDashboardPage() {
 function JobCard({ job }: { job: ReturnType<typeof toDriverJobView> }) {
   const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(job.destinationAddress)}`;
   return (
-    <div className="flex items-start justify-between gap-4">
+    <div className="flex flex-wrap items-start justify-between gap-4">
       <div>
         <p className="font-medium text-text">{job.pickupAddress} → {job.destinationAddress}</p>
         <p className="text-xs text-text-muted">

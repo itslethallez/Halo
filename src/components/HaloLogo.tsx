@@ -37,7 +37,8 @@ export function HaloLogo({
       alt="Halo — Everything handled. Everyone safer."
       width={size}
       height={Math.round(size * ratio)}
-      className="mx-auto block"
+      className="mx-auto block h-auto w-full"
+      style={{ maxWidth: size }}
       priority
     />
   );
