@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentAuthzUser } from "@/lib/auth/currentUser";
 import { getBusinessFinancialReport } from "@/services/reportingService";
 import { formatCents } from "@/lib/currency";
-import { DashboardHeader } from "@/components/DashboardHeader";
+import { DashboardShell } from "@/components/DashboardShell";
 import { StatusPill } from "@/components/StatusPill";
 
 export default async function AdminDashboardPage() {
@@ -59,16 +59,16 @@ export default async function AdminDashboardPage() {
     .filter((b) => b.owed > 0);
 
   return (
-    <div className="min-h-screen bg-bg">
-      <DashboardHeader title="Admin dashboard" subtitle="Full business overview" />
-      <main className="mx-auto max-w-6xl space-y-8 px-6 py-8">
-        <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-          <StatCard label="Today's revenue" value={formatCents(dailyReport.grossRevenueCents)} />
-          <StatCard label="Today's profit" value={formatCents(dailyReport.netProfitCents)} />
-          <StatCard label="This month's revenue" value={formatCents(monthlyReport.grossRevenueCents)} />
-          <StatCard label="This month's profit" value={formatCents(monthlyReport.netProfitCents)} />
-        </section>
+    <DashboardShell role="ADMIN" title="Admin dashboard" subtitle="Full business overview">
+      <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <StatCard label="Today's revenue" value={formatCents(dailyReport.grossRevenueCents)} />
+        <StatCard label="Today's profit" value={formatCents(dailyReport.netProfitCents)} />
+        <StatCard label="This month's revenue" value={formatCents(monthlyReport.grossRevenueCents)} />
+        <StatCard label="This month's profit" value={formatCents(monthlyReport.netProfitCents)} />
+      </section>
 
+      <section id="bookings" className="scroll-mt-8 space-y-4">
+        <SectionHeading title="Bookings" />
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <Panel title={`Today's bookings (${todaysBookings.length})`}>
             {todaysBookings.length === 0 && <Empty text="No bookings scheduled for today." />}
@@ -119,7 +119,12 @@ export default async function AdminDashboardPage() {
               </Row>
             ))}
           </Panel>
+        </div>
+      </section>
 
+      <section id="safety" className="scroll-mt-8 space-y-4">
+        <SectionHeading title="Safety" />
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <Panel title={`Safety reviews (${safetyReviews.length})`} alert={safetyReviews.length > 0}>
             {safetyReviews.length === 0 && <Empty text="No open safety reviews." />}
             {safetyReviews.map((incident) => (
@@ -145,36 +150,6 @@ export default async function AdminDashboardPage() {
             ))}
           </Panel>
 
-          <Panel title={`Unpaid balances (${unpaidWithBalance.length})`}>
-            {unpaidWithBalance.length === 0 && <Empty text="Everyone is paid up." />}
-            {unpaidWithBalance.map((b) => (
-              <Row key={b.id}>
-                <div>
-                  <p className="font-medium text-text">{b.client.fullName}</p>
-                  <p className="text-xs text-text-muted">{b.service.name}</p>
-                </div>
-                <span className="text-sm font-semibold text-text">{formatCents(b.owed)}</span>
-              </Row>
-            ))}
-          </Panel>
-
-          <Panel title="Worker & driver availability">
-            <div className="grid grid-cols-2 gap-4 p-4 text-sm">
-              <div>
-                <p className="font-medium text-text">Workers</p>
-                {workers.map((w) => (
-                  <p key={w.id} className="text-text-muted">{w.displayName} — {w.active ? "active" : "inactive"}</p>
-                ))}
-              </div>
-              <div>
-                <p className="font-medium text-text">Drivers</p>
-                {drivers.map((d) => (
-                  <p key={d.id} className="text-text-muted">{d.user.name} — {d.active ? "active" : "inactive"}</p>
-                ))}
-              </div>
-            </div>
-          </Panel>
-
           <Panel title="Recent incidents">
             {recentIncidents.length === 0 && <Empty text="No incidents on file." />}
             {recentIncidents.map((incident) => (
@@ -188,9 +163,49 @@ export default async function AdminDashboardPage() {
             ))}
           </Panel>
         </div>
-      </main>
-    </div>
+      </section>
+
+      <section id="drivers" className="scroll-mt-8 space-y-4">
+        <SectionHeading title="Drivers" />
+        <Panel title="Worker & driver availability">
+          <div className="grid grid-cols-2 gap-4 p-4 text-sm">
+            <div>
+              <p className="font-medium text-text">Workers</p>
+              {workers.map((w) => (
+                <p key={w.id} className="text-text-muted">{w.displayName} — {w.active ? "active" : "inactive"}</p>
+              ))}
+            </div>
+            <div>
+              <p className="font-medium text-text">Drivers</p>
+              {drivers.map((d) => (
+                <p key={d.id} className="text-text-muted">{d.user.name} — {d.active ? "active" : "inactive"}</p>
+              ))}
+            </div>
+          </div>
+        </Panel>
+      </section>
+
+      <section id="reports" className="scroll-mt-8 space-y-4">
+        <SectionHeading title="Reports" />
+        <Panel title={`Unpaid balances (${unpaidWithBalance.length})`}>
+          {unpaidWithBalance.length === 0 && <Empty text="Everyone is paid up." />}
+          {unpaidWithBalance.map((b) => (
+            <Row key={b.id}>
+              <div>
+                <p className="font-medium text-text">{b.client.fullName}</p>
+                <p className="text-xs text-text-muted">{b.service.name}</p>
+              </div>
+              <span className="text-sm font-semibold text-text">{formatCents(b.owed)}</span>
+            </Row>
+          ))}
+        </Panel>
+      </section>
+    </DashboardShell>
   );
+}
+
+function SectionHeading({ title }: { title: string }) {
+  return <h2 className="font-display text-xl font-semibold text-text">{title}</h2>;
 }
 
 function StatCard({ label, value }: { label: string; value: string }) {

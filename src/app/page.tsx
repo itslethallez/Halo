@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { ShieldCheck, CalendarClock, Car, LineChart } from "lucide-react";
+import { HaloLogo } from "@/components/HaloLogo";
 
 export default function LandingPage() {
   return (
     <main className="min-h-screen bg-bg">
       <div className="mx-auto max-w-4xl px-6 py-20">
-        <p className="text-sm font-medium uppercase tracking-wide text-accent">Halo</p>
-        <h1 className="mt-3 text-4xl font-semibold text-text sm:text-5xl">
+        <HaloLogo variant="full" size={72} tagline />
+        <h1 className="mt-10 text-4xl font-semibold text-text sm:text-5xl">
           Booking, safety and business management for mobile massage.
         </h1>
         <p className="mt-4 max-w-2xl text-lg text-text-muted">

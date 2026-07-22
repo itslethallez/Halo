@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { HaloLogo } from "@/components/HaloLogo";
 import { loginAction, type LoginFormState } from "./actions";
 
 const initialState: LoginFormState = {};
@@ -9,9 +10,11 @@ export default function LoginPage() {
   const [state, formAction, pending] = useActionState(loginAction, initialState);
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-bg px-4">
+    <main className="flex min-h-screen flex-col items-center justify-center gap-8 bg-bg px-4">
+      <HaloLogo variant="full" size={56} />
+
       <div className="card w-full max-w-sm p-8">
-        <h1 className="text-xl font-semibold text-text">Sign in to Halo</h1>
+        <h1 className="text-xl font-semibold text-text">Sign in</h1>
         <p className="mt-1 text-sm text-text-muted">Discreet, secure access for your team and clients.</p>
 
         <form action={formAction} className="mt-6 space-y-4">

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { getCurrentAuthzUser } from "@/lib/auth/currentUser";
-import { DashboardHeader } from "@/components/DashboardHeader";
+import { DashboardShell } from "@/components/DashboardShell";
 import { StatusPill } from "@/components/StatusPill";
 import { ACTIVE_BOOKING_STATUSES } from "@/domain/booking/statusMachine";
 import { submitSatisfactionSurveyAction } from "./actions";
@@ -31,15 +31,14 @@ export default async function ClientDashboardPage() {
   ]);
 
   return (
-    <div className="min-h-screen bg-bg">
-      <DashboardHeader title={`Welcome back, ${client.fullName.split(" ")[0]}`} subtitle="Your appointments" />
-      <main className="mx-auto max-w-3xl space-y-8 px-6 py-8">
-        <div>
-          <Link href="/book" className="btn-primary inline-block text-sm">
-            Request a new appointment
-          </Link>
-        </div>
+    <DashboardShell role="CLIENT" title={`Welcome back, ${client.fullName.split(" ")[0]}`} subtitle="Your appointments">
+      <div>
+        <Link href="/book" className="btn-primary inline-block text-sm">
+          Request a new appointment
+        </Link>
+      </div>
 
+      <section id="bookings" className="scroll-mt-8 space-y-8">
         <Panel title={`Upcoming appointments (${upcoming.length})`}>
           {upcoming.length === 0 && <Empty text="You have no upcoming appointments." />}
           {upcoming.map((b) => (
@@ -73,8 +72,8 @@ export default async function ClientDashboardPage() {
             </Row>
           ))}
         </Panel>
-      </main>
-    </div>
+      </section>
+    </DashboardShell>
   );
 }
 

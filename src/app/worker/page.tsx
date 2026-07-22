@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { getCurrentAuthzUser } from "@/lib/auth/currentUser";
 import { formatCents } from "@/lib/currency";
-import { DashboardHeader } from "@/components/DashboardHeader";
+import { DashboardShell } from "@/components/DashboardShell";
 import { StatusPill } from "@/components/StatusPill";
 import { checkInAction, emergencyEscalationAction, submitSafetySurveyAction } from "./actions";
 
@@ -46,10 +46,8 @@ export default async function WorkerDashboardPage() {
   const nextBooking = todaysSchedule.find((b) => !["FULLY_COMPLETED", "CANCELLED", "NO_SHOW"].includes(b.status));
 
   return (
-    <div className="min-h-screen bg-bg">
-      <DashboardHeader title={`Hi ${worker.displayName}`} subtitle="Your schedule, clients and safety tools" />
-      <main className="mx-auto max-w-4xl space-y-8 px-6 py-8">
-        <section className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+    <DashboardShell role="WORKER" title={`Hi ${worker.displayName}`} subtitle="Your schedule, clients and safety tools">
+      <section className="grid grid-cols-2 gap-4 sm:grid-cols-3">
           <StatCard label="Weekly earnings" value={formatCents(weeklyEarningsCents)} />
           <StatCard label="Completed this week" value={String(completedThisWeek.length)} />
           <StatCard label="Outstanding surveys" value={String(outstandingSurveys.length)} alert={outstandingSurveys.length > 0} />
@@ -87,39 +85,44 @@ export default async function WorkerDashboardPage() {
           </div>
         )}
 
-        <Panel title={`Today's schedule (${todaysSchedule.length})`}>
-          {todaysSchedule.length === 0 && <Empty text="Nothing scheduled today." />}
-          {todaysSchedule.map((b) => (
-            <Row key={b.id}>
-              <div>
-                <p className="font-medium text-text">{b.client.fullName} · {b.service.name}</p>
-                <p className="text-xs text-text-muted">{b.confirmedStart?.toLocaleTimeString("en-AU", { hour: "2-digit", minute: "2-digit" })}</p>
-              </div>
-              <StatusPill status={b.status} />
-            </Row>
-          ))}
-        </Panel>
+        <section id="schedule" className="scroll-mt-8">
+          <Panel title={`Today's schedule (${todaysSchedule.length})`}>
+            {todaysSchedule.length === 0 && <Empty text="Nothing scheduled today." />}
+            {todaysSchedule.map((b) => (
+              <Row key={b.id}>
+                <div>
+                  <p className="font-medium text-text">{b.client.fullName} · {b.service.name}</p>
+                  <p className="text-xs text-text-muted">{b.confirmedStart?.toLocaleTimeString("en-AU", { hour: "2-digit", minute: "2-digit" })}</p>
+                </div>
+                <StatusPill status={b.status} />
+              </Row>
+            ))}
+          </Panel>
+        </section>
 
-        <Panel title={`Outstanding safety surveys (${outstandingSurveys.length})`} alert={outstandingSurveys.length > 0}>
-          {outstandingSurveys.length === 0 && <Empty text="You're all caught up." />}
-          {outstandingSurveys.map((b) => (
-            <SurveyForm key={b.id} bookingId={b.id} clientName={b.client.fullName} />
-          ))}
-        </Panel>
+        <section id="safety" className="scroll-mt-8">
+          <Panel title={`Outstanding safety surveys (${outstandingSurveys.length})`} alert={outstandingSurveys.length > 0}>
+            {outstandingSurveys.length === 0 && <Empty text="You're all caught up." />}
+            {outstandingSurveys.map((b) => (
+              <SurveyForm key={b.id} bookingId={b.id} clientName={b.client.fullName} />
+            ))}
+          </Panel>
+        </section>
 
-        <Panel title={`Messages requiring your personal reply (${conversationsNeedingReply.length})`}>
-          {conversationsNeedingReply.length === 0 && <Empty text="No conversations need you right now — the assistant has it covered." />}
-          {conversationsNeedingReply.map((c) => (
-            <Row key={c.id}>
-              <div>
-                <p className="font-medium text-text">{c.client.fullName}</p>
-                <p className="text-xs text-text-muted">{c.escalationReason?.replaceAll("_", " ")}</p>
-              </div>
-            </Row>
-          ))}
-        </Panel>
-      </main>
-    </div>
+        <section id="messages" className="scroll-mt-8">
+          <Panel title={`Messages requiring your personal reply (${conversationsNeedingReply.length})`}>
+            {conversationsNeedingReply.length === 0 && <Empty text="No conversations need you right now — the assistant has it covered." />}
+            {conversationsNeedingReply.map((c) => (
+              <Row key={c.id}>
+                <div>
+                  <p className="font-medium text-text">{c.client.fullName}</p>
+                  <p className="text-xs text-text-muted">{c.escalationReason?.replaceAll("_", " ")}</p>
+                </div>
+              </Row>
+            ))}
+          </Panel>
+        </section>
+    </DashboardShell>
   );
 }
 
