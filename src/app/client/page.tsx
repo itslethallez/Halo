@@ -31,11 +31,11 @@ export default async function ClientDashboardPage() {
   ]);
 
   return (
-    <div className="min-h-screen bg-sand-50">
+    <div className="min-h-screen bg-bg">
       <DashboardHeader title={`Welcome back, ${client.fullName.split(" ")[0]}`} subtitle="Your appointments" />
       <main className="mx-auto max-w-3xl space-y-8 px-6 py-8">
         <div>
-          <Link href="/book" className="inline-block rounded-lg bg-brand-700 px-4 py-2 text-sm font-medium text-white hover:bg-brand-800">
+          <Link href="/book" className="btn-primary inline-block text-sm">
             Request a new appointment
           </Link>
         </div>
@@ -45,8 +45,8 @@ export default async function ClientDashboardPage() {
           {upcoming.map((b) => (
             <Row key={b.id}>
               <div>
-                <p className="font-medium text-ink-900">{b.service.name} with {b.worker.displayName}</p>
-                <p className="text-xs text-ink-600">{b.confirmedStart?.toLocaleString("en-AU", { dateStyle: "medium", timeStyle: "short" }) ?? "Awaiting confirmation"}</p>
+                <p className="font-medium text-text">{b.service.name} with {b.worker.displayName}</p>
+                <p className="text-xs text-text-muted">{b.confirmedStart?.toLocaleString("en-AU", { dateStyle: "medium", timeStyle: "short" }) ?? "Awaiting confirmation"}</p>
               </div>
               <StatusPill status={b.status} />
             </Row>
@@ -66,8 +66,8 @@ export default async function ClientDashboardPage() {
           {past.map((b) => (
             <Row key={b.id}>
               <div>
-                <p className="font-medium text-ink-900">{b.service.name} with {b.worker.displayName}</p>
-                <p className="text-xs text-ink-600">{b.confirmedStart?.toLocaleDateString("en-AU") ?? ""}</p>
+                <p className="font-medium text-text">{b.service.name} with {b.worker.displayName}</p>
+                <p className="text-xs text-text-muted">{b.confirmedStart?.toLocaleDateString("en-AU") ?? ""}</p>
               </div>
               <StatusPill status={b.status} />
             </Row>
@@ -82,7 +82,7 @@ function SurveyForm({ bookingId, workerName }: { bookingId: string; workerName: 
   return (
     <form action={submitSatisfactionSurveyAction} className="space-y-3 px-4 py-4">
       <input type="hidden" name="bookingId" value={bookingId} />
-      <p className="text-sm text-ink-600">
+      <p className="text-sm text-text-muted">
         Thank you for your booking with {workerName}. Your feedback helps us provide a better, safer and more reliable service.
       </p>
 
@@ -103,14 +103,14 @@ function SurveyForm({ bookingId, workerName }: { bookingId: string; workerName: 
       ]} />
 
       <div>
-        <label className="text-xs font-medium text-ink-700">Comments (optional)</label>
-        <textarea name="comments" rows={2} className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2 text-sm" />
+        <label className="text-xs font-medium text-text-muted">Comments (optional)</label>
+        <textarea name="comments" rows={2} className="mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text" />
       </div>
-      <label className="flex items-center gap-2 text-sm text-ink-700">
+      <label className="flex items-center gap-2 text-sm text-text">
         <input type="checkbox" name="contactMeBack" /> Would you like us to contact you regarding your feedback?
       </label>
 
-      <button className="rounded-lg bg-brand-700 px-4 py-2 text-sm font-medium text-white hover:bg-brand-800">Submit feedback</button>
+      <button className="btn-primary text-sm">Submit feedback</button>
     </form>
   );
 }
@@ -118,10 +118,10 @@ function SurveyForm({ bookingId, workerName }: { bookingId: string; workerName: 
 function SurveyQuestion({ name, label, options }: { name: string; label: string; options: [string, string][] }) {
   return (
     <div>
-      <p className="text-xs font-medium text-ink-700">{label}</p>
+      <p className="text-xs font-medium text-text-muted">{label}</p>
       <div className="mt-1 flex flex-col gap-1">
         {options.map(([value, text]) => (
-          <label key={value} className="flex items-center gap-2 text-sm text-ink-700">
+          <label key={value} className="flex items-center gap-2 text-sm text-text">
             <input type="radio" name={name} value={value} required />
             {text}
           </label>
@@ -133,11 +133,11 @@ function SurveyQuestion({ name, label, options }: { name: string; label: string;
 
 function Panel({ title, alert, children }: { title: string; alert?: boolean; children: React.ReactNode }) {
   return (
-    <div className={`card ${alert ? "ring-1 ring-alert-500/40" : ""}`}>
-      <div className="border-b border-black/5 px-4 py-3">
-        <h2 className="text-sm font-semibold text-ink-900">{title}</h2>
+    <div className={`card ${alert ? "ring-1 ring-border" : ""}`}>
+      <div className="border-b border-border-muted px-4 py-3">
+        <h2 className="text-sm font-semibold text-text">{alert ? `⚠ ${title}` : title}</h2>
       </div>
-      <div className="divide-y divide-black/5">{children}</div>
+      <div className="divide-y divide-border-muted">{children}</div>
     </div>
   );
 }
@@ -147,5 +147,5 @@ function Row({ children }: { children: React.ReactNode }) {
 }
 
 function Empty({ text }: { text: string }) {
-  return <p className="px-4 py-4 text-sm text-ink-500">{text}</p>;
+  return <p className="px-4 py-4 text-sm text-text-muted">{text}</p>;
 }

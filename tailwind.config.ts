@@ -5,49 +5,32 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: {
-          950: "#0b0f14",
-          900: "#111820",
-          800: "#1a232e",
-          700: "#26323f",
-          600: "#3a4a5a",
-          200: "#c7ccd1",
-          100: "#dfe2e5",
+        bg: "var(--bg)",
+        surface: "var(--surface)",
+        "surface-raised": "var(--surface-raised)",
+        border: "var(--border)",
+        "border-muted": "var(--border-muted)",
+        text: {
+          DEFAULT: "var(--text)",
+          muted: "var(--text-muted)",
         },
-        brand: {
-          50: "#f2f7f6",
-          100: "#e2ede9",
-          200: "#c3dbd3",
-          300: "#9cc2b5",
-          400: "#6fa393",
-          500: "#4d8674",
-          600: "#3a6a5c",
-          700: "#30544a",
-          800: "#28443c",
-          900: "#223932",
-          950: "#101f1b",
+        accent: {
+          DEFAULT: "var(--accent)",
+          hover: "var(--accent-hover)",
+          ink: "var(--accent-ink)",
         },
-        sand: {
-          50: "#faf8f5",
-          100: "#f3efe8",
-          200: "#e6ddd0",
-        },
-        alert: {
-          500: "#c2542f",
-          600: "#a4432a",
-        },
+        "status-safe": "var(--status-safe)",
       },
       fontFamily: {
-        sans: [
-          "Inter",
-          "ui-sans-serif",
-          "system-ui",
-          "-apple-system",
-          "sans-serif",
-        ],
+        sans: ["var(--font-sans)"],
+        display: ["var(--font-display)"],
+        mono: ["var(--font-mono)"],
       },
       borderRadius: {
-        xl2: "1.25rem",
+        DEFAULT: "var(--radius)",
+      },
+      boxShadow: {
+        glow: "var(--halo-glow)",
       },
     },
   },

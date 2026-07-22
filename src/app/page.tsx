@@ -3,22 +3,22 @@ import { ShieldCheck, CalendarClock, Car, LineChart } from "lucide-react";
 
 export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-sand-50">
+    <main className="min-h-screen bg-bg">
       <div className="mx-auto max-w-4xl px-6 py-20">
-        <p className="text-sm font-medium uppercase tracking-wide text-brand-700">Halo</p>
-        <h1 className="mt-3 text-4xl font-semibold text-ink-900 sm:text-5xl">
+        <p className="text-sm font-medium uppercase tracking-wide text-accent">Halo</p>
+        <h1 className="mt-3 text-4xl font-semibold text-text sm:text-5xl">
           Booking, safety and business management for mobile massage.
         </h1>
-        <p className="mt-4 max-w-2xl text-lg text-ink-700">
+        <p className="mt-4 max-w-2xl text-lg text-text-muted">
           A calm, discreet platform that handles enquiries, scheduling, driver dispatch, private
           safety check-ins and business reporting — so you can focus on your clients.
         </p>
 
         <div className="mt-8 flex gap-3">
-          <Link href="/login" className="rounded-lg bg-brand-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-800">
+          <Link href="/login" className="btn-primary text-sm">
             Sign in
           </Link>
-          <Link href="/book" className="rounded-lg border border-black/10 bg-white px-5 py-2.5 text-sm font-medium text-ink-800 hover:bg-sand-100">
+          <Link href="/book" className="btn-secondary text-sm">
             Book an appointment
           </Link>
         </div>
@@ -37,11 +37,11 @@ export default function LandingPage() {
 function Feature({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) {
   return (
     <div className="card p-5">
-      <div className="flex items-center gap-2 text-brand-700">
+      <div className="flex items-center gap-2 text-accent">
         {icon}
-        <h3 className="font-medium text-ink-900">{title}</h3>
+        <h3 className="font-medium text-text">{title}</h3>
       </div>
-      <p className="mt-2 text-sm text-ink-600">{text}</p>
+      <p className="mt-2 text-sm text-text-muted">{text}</p>
     </div>
   );
 }
