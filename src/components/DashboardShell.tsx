@@ -1,4 +1,5 @@
 import { Sidebar } from "./Sidebar";
+import { MobileNav } from "./MobileNav";
 import type { Role } from "@prisma/client";
 
 export function DashboardShell({
@@ -13,14 +14,15 @@ export function DashboardShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen bg-bg">
+    <div className="flex min-h-screen bg-bg lg:flex-row">
       <Sidebar role={role} />
-      <div className="flex-1">
-        <header className="border-b border-border-muted bg-surface px-8 py-6">
-          <h1 className="font-display text-2xl font-semibold text-text">{title}</h1>
+      <div className="min-w-0 flex-1">
+        <MobileNav role={role} />
+        <header className="border-b border-border-muted bg-surface px-4 py-5 sm:px-8 sm:py-6">
+          <h1 className="font-display text-xl font-semibold text-text sm:text-2xl">{title}</h1>
           {subtitle && <p className="mt-1 text-sm text-text-muted">{subtitle}</p>}
         </header>
-        <main className="mx-auto max-w-6xl space-y-8 px-8 py-8">{children}</main>
+        <main className="mx-auto max-w-6xl space-y-8 px-4 py-6 sm:px-8 sm:py-8">{children}</main>
       </div>
     </div>
   );

@@ -56,7 +56,7 @@ export default async function WorkerDashboardPage() {
         {nextBooking && (
           <div className="card border-border p-5">
             <p className="text-xs font-medium uppercase tracking-wide text-accent">Next client</p>
-            <div className="mt-2 flex items-start justify-between gap-4">
+            <div className="mt-2 flex flex-wrap items-start justify-between gap-4">
               <div>
                 <p className="text-lg font-semibold text-text">{nextBooking.client.fullName}</p>
                 <p className="text-sm text-text-muted">{nextBooking.service.name} · {nextBooking.confirmedStart?.toLocaleTimeString("en-AU", { hour: "2-digit", minute: "2-digit" })}</p>
@@ -196,7 +196,7 @@ function Panel({ title, alert, children }: { title: string; alert?: boolean; chi
 }
 
 function Row({ children }: { children: React.ReactNode }) {
-  return <div className="flex items-center justify-between gap-4 px-4 py-3">{children}</div>;
+  return <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3">{children}</div>;
 }
 
 function Empty({ text }: { text: string }) {

@@ -168,7 +168,7 @@ export default async function AdminDashboardPage() {
       <section id="drivers" className="scroll-mt-8 space-y-4">
         <SectionHeading title="Drivers" />
         <Panel title="Worker & driver availability">
-          <div className="grid grid-cols-2 gap-4 p-4 text-sm">
+          <div className="grid grid-cols-1 gap-4 p-4 text-sm sm:grid-cols-2">
             <div>
               <p className="font-medium text-text">Workers</p>
               {workers.map((w) => (
@@ -229,7 +229,7 @@ function Panel({ title, alert, children }: { title: string; alert?: boolean; chi
 }
 
 function Row({ children }: { children: React.ReactNode }) {
-  return <div className="flex items-center justify-between gap-4 px-4 py-3">{children}</div>;
+  return <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3">{children}</div>;
 }
 
 function Empty({ text }: { text: string }) {
