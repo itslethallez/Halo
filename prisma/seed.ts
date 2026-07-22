@@ -18,6 +18,12 @@ function daysFromNow(days: number, hour = 10, minute = 0): Date {
 }
 
 async function main() {
+  const existingBusiness = await prisma.business.findFirst();
+  if (existingBusiness) {
+    console.log("Seed data already present — skipping.");
+    return;
+  }
+
   console.log("Seeding Halo demo data...");
 
   const devPasswordHash = await hashPassword("DemoPass123!");
