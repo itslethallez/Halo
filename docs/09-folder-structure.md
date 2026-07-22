@@ -1,7 +1,7 @@
 # MVP Folder Structure
 
 ```
-truereach/
+halo/
 ├── docs/                          # This design documentation
 ├── prisma/
 │   ├── schema.prisma

@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "TrueReach — Mobile Massage Booking & Safety Platform",
+  title: "Halo — Mobile Massage Booking & Safety Platform",
   description: "Secure booking, safety and business management for mobile massage workers and drivers.",
   manifest: "/manifest.json",
 };

@@ -9,7 +9,7 @@ export function generateTotpSecret(): string {
 }
 
 export function buildTotpKeyUri(secret: string, accountEmail: string): string {
-  return authenticator.keyuri(accountEmail, "TrueReach", secret);
+  return authenticator.keyuri(accountEmail, "Halo", secret);
 }
 
 export function verifyTotpCode(secret: string, code: string): boolean {

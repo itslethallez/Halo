@@ -1,4 +1,4 @@
-# TrueReach
+# Halo
 
 A secure, professional booking, safety, driver-dispatch and business-management platform for
 independent mobile massage workers and massage businesses. Built as a responsive Progressive
@@ -70,9 +70,9 @@ double-booking prevention, the booking/driver state machines, risk-engine rules,
 allocation scoring, financial calculations, assistant escalation rules) plus integration tests
 against a real Postgres database for survey submission, safety-status updates, manual-review
 rules, payment-status changes, missed safety check-ins, and private-client-notes access control.
-Integration tests run against `truereach_test` (a separate database from your dev/seeded one) —
-create it once with `createdb truereach_test` and apply migrations with
-`DATABASE_URL=postgresql://.../truereach_test npx prisma migrate deploy`.
+Integration tests run against `halo_test` (a separate database from your dev/seeded one) —
+create it once with `createdb halo_test` and apply migrations with
+`DATABASE_URL=postgresql://.../halo_test npx prisma migrate deploy`.
 
 ## What's intentionally not built yet
 

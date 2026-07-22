@@ -6,7 +6,7 @@
 import { EncryptJWT, jwtDecrypt } from "jose";
 import type { Role } from "@prisma/client";
 
-export const SESSION_COOKIE_NAME = "truereach_session";
+export const SESSION_COOKIE_NAME = "halo_session";
 const SESSION_DURATION_SECONDS = 60 * 60 * 12; // 12 hours
 
 export interface SessionPayload {
