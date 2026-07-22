@@ -1,0 +1,100 @@
+/* =====================================================================
+   HALO — UI THEME
+   Palette + type pulled straight from the design document.
+
+   Next.js note: fonts are loaded via next/font/google in layout.tsx rather
+   than the @import this file would otherwise use — next/font self-hosts the
+   font files at build time (no runtime request to Google, better CLS/perf).
+   Its `variable` option is set to exactly the --font-fraunces/--font-hanken/
+   --font-jetbrains names composed below, so nothing else needs to know the
+   fonts come from next/font instead of a <link>/@import.
+   ===================================================================== */
+
+:root{
+  /* ---- raw palette ---- */
+  --halo-ink:#0B0E1A;          /* night — app background            */
+  --halo-ink-2:#12172A;        /* raised surface                    */
+  --halo-panel:#161C30;        /* cards / panels on dark            */
+  --halo-gold:#E9B949;         /* THE accent — buttons, rings, links */
+  --halo-gold-soft:#F0D089;    /* accent hover / gradient top       */
+  --halo-paper:#F6F4EE;        /* light surface / primary text on dark */
+  --halo-paper-2:#EFECE2;      /* light surface, alt                */
+  --halo-on-paper:#1A1D2B;     /* text on light surfaces            */
+  --halo-muted:#767C90;        /* secondary text                    */
+  --halo-muted-2:#9AA0B0;      /* secondary text on dark            */
+  --halo-teal:#57C4B8;         /* STATUS ONLY — safe / active / on-shift */
+  --halo-rule:#DCD8CC;         /* hairline on light                 */
+  --halo-gold-hair:rgba(233,185,73,.18); /* hairline on dark        */
+  --halo-white-hair:rgba(255,255,255,.08);
+
+  /* ---- semantic roles (use these in components) ---- */
+  --bg:var(--halo-ink);
+  --surface:var(--halo-ink-2);
+  --surface-raised:var(--halo-panel);
+  --border:var(--halo-gold-hair);
+  --border-muted:var(--halo-white-hair);
+  --text:var(--halo-paper);
+  --text-muted:var(--halo-muted-2);
+  --accent:var(--halo-gold);
+  --accent-hover:var(--halo-gold-soft);
+  --accent-ink:var(--halo-ink);     /* text/icon sitting ON a gold fill */
+  --status-safe:var(--halo-teal);
+
+  /* ---- type (next/font variables composed with the same fallback stacks
+     the design document specified) ---- */
+  --font-display:var(--font-fraunces),Georgia,serif;
+  --font-sans:var(--font-hanken),system-ui,-apple-system,sans-serif;
+  --font-mono:var(--font-jetbrains),ui-monospace,monospace;
+
+  /* ---- misc ---- */
+  --radius:12px;
+  --halo-glow:0 0 28px rgba(233,185,73,.45);
+}
+
+/* BASE — enough to visibly flip the app to the Halo look */
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-sans);
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:500;letter-spacing:-.01em;}
+code,kbd,.mono{font-family:var(--font-mono);}
+a{color:var(--accent);text-decoration:none;}
+a:hover{color:var(--accent-hover);}
+::selection{background:rgba(233,185,73,.30);color:#fff;}
+
+/* Primary action — gold fill, ink text */
+.btn-primary{
+  background:var(--accent);
+  color:var(--accent-ink);
+  font-weight:600;
+  border:none;border-radius:var(--radius);
+  padding:.7rem 1.2rem;cursor:pointer;
+  transition:background .15s ease, box-shadow .15s ease;
+}
+.btn-primary:hover{background:var(--accent-hover);box-shadow:var(--halo-glow);}
+
+/* Secondary — outlined on dark */
+.btn-secondary{
+  background:transparent;color:var(--text);
+  border:1px solid var(--border);border-radius:var(--radius);
+  padding:.7rem 1.2rem;cursor:pointer;transition:border-color .15s ease;
+}
+.btn-secondary:hover{border-color:var(--accent);}
+
+/* Card / panel */
+.card{
+  background:var(--surface);
+  border:1px solid var(--border-muted);
+  border-radius:var(--radius);
+}
+
+/* Status pill — teal reserved for "safe / active / on-shift" so it stays meaningful */
+.status-safe{color:var(--status-safe);}
+.status-safe::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;
+  background:var(--status-safe);box-shadow:0 0 10px rgba(87,196,184,.8);margin-right:8px;}
+
+/* Quality floor */
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;}}

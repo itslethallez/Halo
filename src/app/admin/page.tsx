@@ -59,7 +59,7 @@ export default async function AdminDashboardPage() {
     .filter((b) => b.owed > 0);
 
   return (
-    <div className="min-h-screen bg-sand-50">
+    <div className="min-h-screen bg-bg">
       <DashboardHeader title="Admin dashboard" subtitle="Full business overview" />
       <main className="mx-auto max-w-6xl space-y-8 px-6 py-8">
         <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -75,8 +75,8 @@ export default async function AdminDashboardPage() {
             {todaysBookings.map((b) => (
               <Row key={b.id}>
                 <div>
-                  <p className="font-medium text-ink-900">{b.client.fullName} · {b.service.name}</p>
-                  <p className="text-xs text-ink-600">{b.worker.displayName} · {b.confirmedStart?.toLocaleTimeString("en-AU", { hour: "2-digit", minute: "2-digit" })}</p>
+                  <p className="font-medium text-text">{b.client.fullName} · {b.service.name}</p>
+                  <p className="text-xs text-text-muted">{b.worker.displayName} · {b.confirmedStart?.toLocaleTimeString("en-AU", { hour: "2-digit", minute: "2-digit" })}</p>
                 </div>
                 <StatusPill status={b.status} />
               </Row>
@@ -88,8 +88,8 @@ export default async function AdminDashboardPage() {
             {upcomingBookings.map((b) => (
               <Row key={b.id}>
                 <div>
-                  <p className="font-medium text-ink-900">{b.client.fullName} · {b.service.name}</p>
-                  <p className="text-xs text-ink-600">{b.worker.displayName} · {b.confirmedStart?.toLocaleDateString("en-AU")}</p>
+                  <p className="font-medium text-text">{b.client.fullName} · {b.service.name}</p>
+                  <p className="text-xs text-text-muted">{b.worker.displayName} · {b.confirmedStart?.toLocaleDateString("en-AU")}</p>
                 </div>
                 <StatusPill status={b.status} />
               </Row>
@@ -101,8 +101,8 @@ export default async function AdminDashboardPage() {
             {awaitingApproval.map((b) => (
               <Row key={b.id}>
                 <div>
-                  <p className="font-medium text-ink-900">{b.client.fullName}</p>
-                  <p className="text-xs text-ink-600">{b.worker.displayName} · requested {b.requestedStart?.toLocaleString("en-AU")}</p>
+                  <p className="font-medium text-text">{b.client.fullName}</p>
+                  <p className="text-xs text-text-muted">{b.worker.displayName} · requested {b.requestedStart?.toLocaleString("en-AU")}</p>
                 </div>
               </Row>
             ))}
@@ -113,8 +113,8 @@ export default async function AdminDashboardPage() {
             {unassignedJobs.map((j) => (
               <Row key={j.id}>
                 <div>
-                  <p className="font-medium text-ink-900">{j.worker.displayName}</p>
-                  <p className="text-xs text-ink-600">{j.pickupAddress} → {j.destinationAddress}</p>
+                  <p className="font-medium text-text">{j.worker.displayName}</p>
+                  <p className="text-xs text-text-muted">{j.pickupAddress} → {j.destinationAddress}</p>
                 </div>
               </Row>
             ))}
@@ -125,10 +125,10 @@ export default async function AdminDashboardPage() {
             {safetyReviews.map((incident) => (
               <Row key={incident.id}>
                 <div>
-                  <p className="font-medium text-ink-900">{incident.client?.fullName ?? "Unknown client"}</p>
-                  <p className="text-xs text-ink-600">{incident.description}</p>
+                  <p className="font-medium text-text">{incident.client?.fullName ?? "Unknown client"}</p>
+                  <p className="text-xs text-text-muted">{incident.description}</p>
                 </div>
-                <span className="status-pill bg-alert-500/10 text-alert-600">{incident.severity}</span>
+                <span className="status-pill border border-border bg-surface-raised font-semibold text-text">{incident.severity}</span>
               </Row>
             ))}
           </Panel>
@@ -138,8 +138,8 @@ export default async function AdminDashboardPage() {
             {missedCheckIns.map((b) => (
               <Row key={b.id}>
                 <div>
-                  <p className="font-medium text-ink-900">{b.worker.displayName}</p>
-                  <p className="text-xs text-ink-600">Stuck at {b.status.replaceAll("_", " ")} since {b.updatedAt.toLocaleTimeString("en-AU")}</p>
+                  <p className="font-medium text-text">{b.worker.displayName}</p>
+                  <p className="text-xs text-text-muted">Stuck at {b.status.replaceAll("_", " ")} since {b.updatedAt.toLocaleTimeString("en-AU")}</p>
                 </div>
               </Row>
             ))}
@@ -150,10 +150,10 @@ export default async function AdminDashboardPage() {
             {unpaidWithBalance.map((b) => (
               <Row key={b.id}>
                 <div>
-                  <p className="font-medium text-ink-900">{b.client.fullName}</p>
-                  <p className="text-xs text-ink-600">{b.service.name}</p>
+                  <p className="font-medium text-text">{b.client.fullName}</p>
+                  <p className="text-xs text-text-muted">{b.service.name}</p>
                 </div>
-                <span className="text-sm font-medium text-alert-600">{formatCents(b.owed)}</span>
+                <span className="text-sm font-semibold text-text">{formatCents(b.owed)}</span>
               </Row>
             ))}
           </Panel>
@@ -161,15 +161,15 @@ export default async function AdminDashboardPage() {
           <Panel title="Worker & driver availability">
             <div className="grid grid-cols-2 gap-4 p-4 text-sm">
               <div>
-                <p className="font-medium text-ink-800">Workers</p>
+                <p className="font-medium text-text">Workers</p>
                 {workers.map((w) => (
-                  <p key={w.id} className="text-ink-600">{w.displayName} — {w.active ? "active" : "inactive"}</p>
+                  <p key={w.id} className="text-text-muted">{w.displayName} — {w.active ? "active" : "inactive"}</p>
                 ))}
               </div>
               <div>
-                <p className="font-medium text-ink-800">Drivers</p>
+                <p className="font-medium text-text">Drivers</p>
                 {drivers.map((d) => (
-                  <p key={d.id} className="text-ink-600">{d.user.name} — {d.active ? "active" : "inactive"}</p>
+                  <p key={d.id} className="text-text-muted">{d.user.name} — {d.active ? "active" : "inactive"}</p>
                 ))}
               </div>
             </div>
@@ -180,10 +180,10 @@ export default async function AdminDashboardPage() {
             {recentIncidents.map((incident) => (
               <Row key={incident.id}>
                 <div>
-                  <p className="font-medium text-ink-900">{incident.client?.fullName ?? "Unknown"}</p>
-                  <p className="text-xs text-ink-600">{incident.description}</p>
+                  <p className="font-medium text-text">{incident.client?.fullName ?? "Unknown"}</p>
+                  <p className="text-xs text-text-muted">{incident.description}</p>
                 </div>
-                <span className="text-xs text-ink-500">{incident.createdAt.toLocaleDateString("en-AU")}</span>
+                <span className="text-xs text-text-muted">{incident.createdAt.toLocaleDateString("en-AU")}</span>
               </Row>
             ))}
           </Panel>
@@ -196,19 +196,19 @@ export default async function AdminDashboardPage() {
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
     <div className="card p-4">
-      <p className="text-xs font-medium uppercase tracking-wide text-ink-500">{label}</p>
-      <p className="mt-1 text-2xl font-semibold text-ink-900">{value}</p>
+      <p className="text-xs font-medium uppercase tracking-wide text-text-muted">{label}</p>
+      <p className="mt-1 text-2xl font-semibold text-text">{value}</p>
     </div>
   );
 }
 
 function Panel({ title, alert, children }: { title: string; alert?: boolean; children: React.ReactNode }) {
   return (
-    <div className={`card ${alert ? "ring-1 ring-alert-500/40" : ""}`}>
-      <div className="border-b border-black/5 px-4 py-3">
-        <h2 className="text-sm font-semibold text-ink-900">{title}</h2>
+    <div className={`card ${alert ? "ring-1 ring-border" : ""}`}>
+      <div className="border-b border-border-muted px-4 py-3">
+        <h2 className="text-sm font-semibold text-text">{alert ? `⚠ ${title}` : title}</h2>
       </div>
-      <div className="divide-y divide-black/5">{children}</div>
+      <div className="divide-y divide-border-muted">{children}</div>
     </div>
   );
 }
@@ -218,5 +218,5 @@ function Row({ children }: { children: React.ReactNode }) {
 }
 
 function Empty({ text }: { text: string }) {
-  return <p className="px-4 py-4 text-sm text-ink-500">{text}</p>;
+  return <p className="px-4 py-4 text-sm text-text-muted">{text}</p>;
 }

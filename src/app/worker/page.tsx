@@ -46,7 +46,7 @@ export default async function WorkerDashboardPage() {
   const nextBooking = todaysSchedule.find((b) => !["FULLY_COMPLETED", "CANCELLED", "NO_SHOW"].includes(b.status));
 
   return (
-    <div className="min-h-screen bg-sand-50">
+    <div className="min-h-screen bg-bg">
       <DashboardHeader title={`Hi ${worker.displayName}`} subtitle="Your schedule, clients and safety tools" />
       <main className="mx-auto max-w-4xl space-y-8 px-6 py-8">
         <section className="grid grid-cols-2 gap-4 sm:grid-cols-3">
@@ -56,15 +56,15 @@ export default async function WorkerDashboardPage() {
         </section>
 
         {nextBooking && (
-          <div className="card border-brand-200 p-5">
-            <p className="text-xs font-medium uppercase tracking-wide text-brand-700">Next client</p>
+          <div className="card border-border p-5">
+            <p className="text-xs font-medium uppercase tracking-wide text-accent">Next client</p>
             <div className="mt-2 flex items-start justify-between gap-4">
               <div>
-                <p className="text-lg font-semibold text-ink-900">{nextBooking.client.fullName}</p>
-                <p className="text-sm text-ink-600">{nextBooking.service.name} · {nextBooking.confirmedStart?.toLocaleTimeString("en-AU", { hour: "2-digit", minute: "2-digit" })}</p>
-                {nextBooking.address && <p className="text-sm text-ink-600">{nextBooking.address.suburb}, {nextBooking.address.state}</p>}
+                <p className="text-lg font-semibold text-text">{nextBooking.client.fullName}</p>
+                <p className="text-sm text-text-muted">{nextBooking.service.name} · {nextBooking.confirmedStart?.toLocaleTimeString("en-AU", { hour: "2-digit", minute: "2-digit" })}</p>
+                {nextBooking.address && <p className="text-sm text-text-muted">{nextBooking.address.suburb}, {nextBooking.address.state}</p>}
                 {nextBooking.driverJobs[0] && (
-                  <p className="text-sm text-ink-600">Driver: {nextBooking.driverJobs[0].driver?.user.name ?? "Not yet assigned"}</p>
+                  <p className="text-sm text-text-muted">Driver: {nextBooking.driverJobs[0].driver?.user.name ?? "Not yet assigned"}</p>
                 )}
               </div>
               <StatusPill status={nextBooking.status} />
@@ -73,14 +73,14 @@ export default async function WorkerDashboardPage() {
             <div className="mt-4 flex flex-wrap gap-2">
               {NEXT_CHECK_IN[nextBooking.status] && (
                 <form action={checkInAction.bind(null, nextBooking.id, NEXT_CHECK_IN[nextBooking.status]!.action)}>
-                  <button className="rounded-lg bg-brand-700 px-4 py-2 text-sm font-medium text-white hover:bg-brand-800">
+                  <button className="btn-primary text-sm">
                     {NEXT_CHECK_IN[nextBooking.status]!.label}
                   </button>
                 </form>
               )}
               <form action={emergencyEscalationAction.bind(null, nextBooking.id)}>
-                <button className="rounded-lg border border-alert-500/40 bg-alert-500/10 px-4 py-2 text-sm font-medium text-alert-600 hover:bg-alert-500/20">
-                  Emergency / safety escalation
+                <button className="rounded-lg border-2 border-border bg-surface-raised px-4 py-2 text-sm font-semibold text-text hover:border-accent">
+                  ⚠ Emergency / safety escalation
                 </button>
               </form>
             </div>
@@ -92,8 +92,8 @@ export default async function WorkerDashboardPage() {
           {todaysSchedule.map((b) => (
             <Row key={b.id}>
               <div>
-                <p className="font-medium text-ink-900">{b.client.fullName} · {b.service.name}</p>
-                <p className="text-xs text-ink-600">{b.confirmedStart?.toLocaleTimeString("en-AU", { hour: "2-digit", minute: "2-digit" })}</p>
+                <p className="font-medium text-text">{b.client.fullName} · {b.service.name}</p>
+                <p className="text-xs text-text-muted">{b.confirmedStart?.toLocaleTimeString("en-AU", { hour: "2-digit", minute: "2-digit" })}</p>
               </div>
               <StatusPill status={b.status} />
             </Row>
@@ -112,8 +112,8 @@ export default async function WorkerDashboardPage() {
           {conversationsNeedingReply.map((c) => (
             <Row key={c.id}>
               <div>
-                <p className="font-medium text-ink-900">{c.client.fullName}</p>
-                <p className="text-xs text-ink-600">{c.escalationReason?.replaceAll("_", " ")}</p>
+                <p className="font-medium text-text">{c.client.fullName}</p>
+                <p className="text-xs text-text-muted">{c.escalationReason?.replaceAll("_", " ")}</p>
               </div>
             </Row>
           ))}
@@ -127,8 +127,8 @@ function SurveyForm({ bookingId, clientName }: { bookingId: string; clientName: 
   return (
     <form action={submitSafetySurveyAction} className="space-y-3 px-4 py-4">
       <input type="hidden" name="bookingId" value={bookingId} />
-      <p className="font-medium text-ink-900">Private safety survey — {clientName}</p>
-      <p className="text-xs text-ink-500">This survey is private and is never shown to the client.</p>
+      <p className="font-medium text-text">Private safety survey — {clientName}</p>
+      <p className="text-xs text-text-muted">This survey is private and is never shown to the client.</p>
 
       <SurveyQuestion name="q1" label="Did you feel safe and comfortable throughout this appointment?" options={[
         ["YES_COMPLETELY", "Yes, completely"], ["MOSTLY", "Mostly"], ["SLIGHTLY_UNCOMFORTABLE", "I felt slightly uncomfortable"], ["FELT_UNSAFE", "No, I felt unsafe"],
@@ -147,11 +147,11 @@ function SurveyForm({ bookingId, clientName }: { bookingId: string; clientName: 
       ]} />
 
       <div>
-        <label className="text-xs font-medium text-ink-700">Private notes (optional)</label>
-        <textarea name="privateNotes" rows={2} className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2 text-sm" />
+        <label className="text-xs font-medium text-text-muted">Private notes (optional)</label>
+        <textarea name="privateNotes" rows={2} className="mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text" />
       </div>
 
-      <button className="rounded-lg bg-brand-700 px-4 py-2 text-sm font-medium text-white hover:bg-brand-800">Submit private survey</button>
+      <button className="btn-primary text-sm">Submit private survey</button>
     </form>
   );
 }
@@ -159,10 +159,10 @@ function SurveyForm({ bookingId, clientName }: { bookingId: string; clientName: 
 function SurveyQuestion({ name, label, options }: { name: string; label: string; options: [string, string][] }) {
   return (
     <div>
-      <p className="text-xs font-medium text-ink-700">{label}</p>
+      <p className="text-xs font-medium text-text-muted">{label}</p>
       <div className="mt-1 flex flex-col gap-1">
         {options.map(([value, text]) => (
-          <label key={value} className="flex items-center gap-2 text-sm text-ink-700">
+          <label key={value} className="flex items-center gap-2 text-sm text-text">
             <input type="radio" name={name} value={value} required />
             {text}
           </label>
@@ -174,20 +174,20 @@ function SurveyQuestion({ name, label, options }: { name: string; label: string;
 
 function StatCard({ label, value, alert }: { label: string; value: string; alert?: boolean }) {
   return (
-    <div className={`card p-4 ${alert ? "ring-1 ring-alert-500/40" : ""}`}>
-      <p className="text-xs font-medium uppercase tracking-wide text-ink-500">{label}</p>
-      <p className="mt-1 text-2xl font-semibold text-ink-900">{value}</p>
+    <div className={`card p-4 ${alert ? "ring-1 ring-border" : ""}`}>
+      <p className="text-xs font-medium uppercase tracking-wide text-text-muted">{label}</p>
+      <p className="mt-1 text-2xl font-semibold text-text">{value}</p>
     </div>
   );
 }
 
 function Panel({ title, alert, children }: { title: string; alert?: boolean; children: React.ReactNode }) {
   return (
-    <div className={`card ${alert ? "ring-1 ring-alert-500/40" : ""}`}>
-      <div className="border-b border-black/5 px-4 py-3">
-        <h2 className="text-sm font-semibold text-ink-900">{title}</h2>
+    <div className={`card ${alert ? "ring-1 ring-border" : ""}`}>
+      <div className="border-b border-border-muted px-4 py-3">
+        <h2 className="text-sm font-semibold text-text">{alert ? `⚠ ${title}` : title}</h2>
       </div>
-      <div className="divide-y divide-black/5">{children}</div>
+      <div className="divide-y divide-border-muted">{children}</div>
     </div>
   );
 }
@@ -197,5 +197,5 @@ function Row({ children }: { children: React.ReactNode }) {
 }
 
 function Empty({ text }: { text: string }) {
-  return <p className="px-4 py-4 text-sm text-ink-500">{text}</p>;
+  return <p className="px-4 py-4 text-sm text-text-muted">{text}</p>;
 }

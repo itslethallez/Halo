@@ -40,7 +40,7 @@ export default async function DriverDashboardPage() {
   const nextJob = todaysJobs.find((j) => !["COMPLETED", "CANCELLED", "DECLINED"].includes(j.status));
 
   return (
-    <div className="min-h-screen bg-sand-50">
+    <div className="min-h-screen bg-bg">
       <DashboardHeader title="Driver dashboard" subtitle="Your transport jobs for today" />
       <main className="mx-auto max-w-3xl space-y-8 px-6 py-8">
         <section className="grid grid-cols-2 gap-4 sm:grid-cols-3">
@@ -50,8 +50,8 @@ export default async function DriverDashboardPage() {
         </section>
 
         {nextJob && (
-          <div className="card border-brand-200 p-5">
-            <p className="text-xs font-medium uppercase tracking-wide text-brand-700">Next pickup</p>
+          <div className="card border-border p-5">
+            <p className="text-xs font-medium uppercase tracking-wide text-accent">Next pickup</p>
             <JobCard job={toDriverJobView(nextJob)} />
           </div>
         )}
@@ -63,10 +63,10 @@ export default async function DriverDashboardPage() {
               <JobCard job={toDriverJobView(job)} />
               <div className="mt-3 flex gap-2">
                 <form action={respondToOfferAction.bind(null, job.id, true)}>
-                  <button className="rounded-lg bg-brand-700 px-4 py-2 text-sm font-medium text-white hover:bg-brand-800">Accept</button>
+                  <button className="btn-primary text-sm">Accept</button>
                 </form>
                 <form action={respondToOfferAction.bind(null, job.id, false)}>
-                  <button className="rounded-lg border border-black/10 px-4 py-2 text-sm text-ink-700 hover:bg-sand-100">Decline</button>
+                  <button className="btn-secondary text-sm">Decline</button>
                 </form>
               </div>
             </div>
@@ -80,7 +80,7 @@ export default async function DriverDashboardPage() {
               <JobCard job={toDriverJobView(job)} />
               {NEXT_STATUS[job.status] && (
                 <form action={advanceTripStatusAction.bind(null, job.id, NEXT_STATUS[job.status]!.next)} className="mt-3">
-                  <button className="rounded-lg bg-brand-700 px-4 py-2 text-sm font-medium text-white hover:bg-brand-800">
+                  <button className="btn-primary text-sm">
                     {NEXT_STATUS[job.status]!.label}
                   </button>
                 </form>
@@ -98,16 +98,16 @@ function JobCard({ job }: { job: ReturnType<typeof toDriverJobView> }) {
   return (
     <div className="flex items-start justify-between gap-4">
       <div>
-        <p className="font-medium text-ink-900">{job.pickupAddress} → {job.destinationAddress}</p>
-        <p className="text-xs text-ink-600">
+        <p className="font-medium text-text">{job.pickupAddress} → {job.destinationAddress}</p>
+        <p className="text-xs text-text-muted">
           {job.scheduledStart.toLocaleString("en-AU", { dateStyle: "medium", timeStyle: "short" })} · ~{job.estimatedTravelMinutes} min
           {job.returnTripRequired ? " · return trip required" : ""}
         </p>
-        {job.specialInstructions && <p className="mt-1 text-xs text-ink-500">Note: {job.specialInstructions}</p>}
-        <p className="mt-1 text-sm font-medium text-brand-700">{formatCents(job.driverPaymentCents)}</p>
+        {job.specialInstructions && <p className="mt-1 text-xs text-text-muted">Note: {job.specialInstructions}</p>}
+        <p className="mt-1 text-sm font-medium text-accent">{formatCents(job.driverPaymentCents)}</p>
       </div>
-      <a href={mapsUrl} target="_blank" rel="noreferrer" className="whitespace-nowrap rounded-lg border border-black/10 px-3 py-1.5 text-xs font-medium text-ink-700 hover:bg-sand-100">
-        Navigate
+      <a href={mapsUrl} target="_blank" rel="noreferrer" className="whitespace-nowrap text-xs font-medium text-accent hover:text-accent-hover">
+        Navigate →
       </a>
     </div>
   );
@@ -115,24 +115,24 @@ function JobCard({ job }: { job: ReturnType<typeof toDriverJobView> }) {
 
 function StatCard({ label, value, alert }: { label: string; value: string; alert?: boolean }) {
   return (
-    <div className={`card p-4 ${alert ? "ring-1 ring-alert-500/40" : ""}`}>
-      <p className="text-xs font-medium uppercase tracking-wide text-ink-500">{label}</p>
-      <p className="mt-1 text-2xl font-semibold text-ink-900">{value}</p>
+    <div className={`card p-4 ${alert ? "ring-1 ring-border" : ""}`}>
+      <p className="text-xs font-medium uppercase tracking-wide text-text-muted">{label}</p>
+      <p className="mt-1 text-2xl font-semibold text-text">{value}</p>
     </div>
   );
 }
 
 function Panel({ title, alert, children }: { title: string; alert?: boolean; children: React.ReactNode }) {
   return (
-    <div className={`card ${alert ? "ring-1 ring-alert-500/40" : ""}`}>
-      <div className="border-b border-black/5 px-4 py-3">
-        <h2 className="text-sm font-semibold text-ink-900">{title}</h2>
+    <div className={`card ${alert ? "ring-1 ring-border" : ""}`}>
+      <div className="border-b border-border-muted px-4 py-3">
+        <h2 className="text-sm font-semibold text-text">{alert ? `⚠ ${title}` : title}</h2>
       </div>
-      <div className="divide-y divide-black/5">{children}</div>
+      <div className="divide-y divide-border-muted">{children}</div>
     </div>
   );
 }
 
 function Empty({ text }: { text: string }) {
-  return <p className="px-4 py-4 text-sm text-ink-500">{text}</p>;
+  return <p className="px-4 py-4 text-sm text-text-muted">{text}</p>;
 }

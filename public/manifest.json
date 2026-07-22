@@ -4,8 +4,8 @@
   "description": "Mobile massage booking, safety and business management platform.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#faf8f5",
-  "theme_color": "#223932",
+  "background_color": "#0B0E1A",
+  "theme_color": "#0B0E1A",
   "icons": [
     { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }
   ]

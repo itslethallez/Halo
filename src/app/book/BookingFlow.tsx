@@ -10,6 +10,9 @@ interface WorkerOption {
   services: { id: string; name: string; durationMinutes: number; priceCents: number }[];
 }
 
+const inputClass =
+  "mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent";
+
 export function BookingFlow({ workers }: { workers: WorkerOption[] }) {
   const [workerId, setWorkerId] = useState<string>("");
   const [serviceId, setServiceId] = useState<string>("");
@@ -44,9 +47,9 @@ export function BookingFlow({ workers }: { workers: WorkerOption[] }) {
   if (confirmation) {
     return (
       <div className="card mt-8 p-6">
-        <h2 className="text-lg font-semibold text-brand-800">Request sent!</h2>
-        <p className="mt-2 text-sm text-ink-700">
-          Your booking request is now <strong>{confirmation.status.replaceAll("_", " ").toLowerCase()}</strong>. We&apos;ll be
+        <h2 className="text-lg font-semibold text-accent">Request sent!</h2>
+        <p className="mt-2 text-sm text-text-muted">
+          Your booking request is now <strong className="text-text">{confirmation.status.replaceAll("_", " ").toLowerCase()}</strong>. We&apos;ll be
           in touch shortly to confirm.
         </p>
       </div>
@@ -56,9 +59,9 @@ export function BookingFlow({ workers }: { workers: WorkerOption[] }) {
   return (
     <div className="mt-8 space-y-6">
       <div className="card p-5">
-        <label className="text-sm font-medium text-ink-700">Choose a therapist</label>
+        <label className="text-sm font-medium text-text-muted">Choose a therapist</label>
         <select
-          className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2 text-sm"
+          className={inputClass}
           value={workerId}
           onChange={(e) => {
             setWorkerId(e.target.value);
@@ -78,9 +81,9 @@ export function BookingFlow({ workers }: { workers: WorkerOption[] }) {
 
         {worker && (
           <>
-            <label className="mt-4 block text-sm font-medium text-ink-700">Choose a service</label>
+            <label className="mt-4 block text-sm font-medium text-text-muted">Choose a service</label>
             <select
-              className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2 text-sm"
+              className={inputClass}
               value={serviceId}
               onChange={(e) => {
                 setServiceId(e.target.value);
@@ -100,21 +103,23 @@ export function BookingFlow({ workers }: { workers: WorkerOption[] }) {
 
         {serviceId && (
           <>
-            <p className="mt-4 text-sm font-medium text-ink-700">Available times</p>
-            {pending && <p className="mt-1 text-sm text-ink-500">Checking real availability...</p>}
+            <p className="mt-4 text-sm font-medium text-text-muted">Available times</p>
+            {pending && <p className="mt-1 text-sm text-text-muted">Checking real availability...</p>}
             <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
               {slots.map((slot) => (
                 <button
                   key={slot.startIso}
                   onClick={() => setSelectedSlot(slot)}
                   className={`rounded-lg border px-3 py-2 text-xs ${
-                    selectedSlot?.startIso === slot.startIso ? "border-brand-600 bg-brand-100 text-brand-800" : "border-black/10 hover:bg-sand-100"
+                    selectedSlot?.startIso === slot.startIso
+                      ? "border-accent bg-accent/15 text-accent"
+                      : "border-border text-text hover:border-accent"
                   }`}
                 >
                   {new Date(slot.startIso).toLocaleString("en-AU", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
                 </button>
               ))}
-              {!pending && slots.length === 0 && <p className="col-span-full text-sm text-ink-500">No genuinely available slots found in the next two weeks.</p>}
+              {!pending && slots.length === 0 && <p className="col-span-full text-sm text-text-muted">No genuinely available slots found in the next two weeks.</p>}
             </div>
           </>
         )}
@@ -133,13 +138,13 @@ export function BookingFlow({ workers }: { workers: WorkerOption[] }) {
           <input type="hidden" name="startIso" value={selectedSlot.startIso} />
           <input type="hidden" name="endIso" value={selectedSlot.endIso} />
 
-          <p className="text-sm font-medium text-ink-800">Your details</p>
-          <input name="fullName" required placeholder="Full name" className="w-full rounded-lg border border-black/10 px-3 py-2 text-sm" />
-          <input name="phone" required placeholder="Mobile number" className="w-full rounded-lg border border-black/10 px-3 py-2 text-sm" />
-          <input name="email" type="email" placeholder="Email" className="w-full rounded-lg border border-black/10 px-3 py-2 text-sm" />
-          <input name="suburb" required placeholder="Suburb" className="w-full rounded-lg border border-black/10 px-3 py-2 text-sm" />
+          <p className="text-sm font-medium text-text">Your details</p>
+          <input name="fullName" required placeholder="Full name" className={inputClass.replace("mt-1 ", "")} />
+          <input name="phone" required placeholder="Mobile number" className={inputClass.replace("mt-1 ", "")} />
+          <input name="email" type="email" placeholder="Email" className={inputClass.replace("mt-1 ", "")} />
+          <input name="suburb" required placeholder="Suburb" className={inputClass.replace("mt-1 ", "")} />
 
-          <button className="w-full rounded-lg bg-brand-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-800">
+          <button className="btn-primary w-full text-sm">
             Request this appointment
           </button>
         </form>
@@ -147,10 +152,10 @@ export function BookingFlow({ workers }: { workers: WorkerOption[] }) {
 
       {workerId && (
         <div className="card p-5">
-          <p className="text-sm font-medium text-ink-800">Ask the booking assistant</p>
-          <div className="mt-2 max-h-64 space-y-2 overflow-y-auto rounded-lg bg-sand-100 p-3">
+          <p className="text-sm font-medium text-text">Ask the booking assistant</p>
+          <div className="mt-2 max-h-64 space-y-2 overflow-y-auto rounded-lg bg-surface-raised p-3">
             {assistantLog.map((entry, i) => (
-              <p key={i} className={entry.from === "assistant" ? "text-sm text-ink-800" : "text-right text-sm text-brand-800"}>
+              <p key={i} className={entry.from === "assistant" ? "text-sm text-text" : "text-right text-sm text-accent"}>
                 {entry.text}
               </p>
             ))}
@@ -161,9 +166,9 @@ export function BookingFlow({ workers }: { workers: WorkerOption[] }) {
               onChange={(e) => setAssistantInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && sendToAssistant()}
               placeholder="Type a question..."
-              className="flex-1 rounded-lg border border-black/10 px-3 py-2 text-sm"
+              className={`flex-1 ${inputClass.replace("mt-1 ", "")}`}
             />
-            <button onClick={sendToAssistant} className="rounded-lg bg-brand-700 px-4 py-2 text-sm font-medium text-white hover:bg-brand-800">
+            <button onClick={sendToAssistant} className="btn-primary text-sm">
               Send
             </button>
           </div>

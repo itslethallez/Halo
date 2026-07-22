@@ -22,11 +22,11 @@ export default async function BookPage() {
   }));
 
   return (
-    <main className="min-h-screen bg-sand-50 px-4 py-10">
+    <main className="min-h-screen bg-bg px-4 py-10">
       <div className="mx-auto max-w-2xl">
-        <p className="text-sm font-medium uppercase tracking-wide text-brand-700">Book an appointment</p>
-        <h1 className="mt-1 text-2xl font-semibold text-ink-900">Serenity Mobile Massage</h1>
-        <p className="mt-2 text-sm text-ink-600">
+        <p className="text-sm font-medium uppercase tracking-wide text-accent">Book an appointment</p>
+        <h1 className="mt-1 text-2xl font-semibold text-text">Serenity Mobile Massage</h1>
+        <p className="mt-2 text-sm text-text-muted">
           Choose a therapist and service below. Availability shown is checked live against real
           working hours, travel time and existing bookings — nothing offered here can double-book.
         </p>
