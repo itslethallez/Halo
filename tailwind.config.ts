@@ -20,6 +20,13 @@ const config: Config = {
           ink: "var(--accent-ink)",
         },
         "status-safe": "var(--status-safe)",
+        hue: {
+          bookings: "var(--hue-bookings)",
+          safety: "var(--hue-safety)",
+          drivers: "var(--hue-drivers)",
+          reports: "var(--hue-reports)",
+          messages: "var(--hue-messages)",
+        },
       },
       fontFamily: {
         sans: ["var(--font-sans)"],
