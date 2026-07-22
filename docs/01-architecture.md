@@ -1,8 +1,8 @@
-# TrueReach — System Architecture
+# Halo — System Architecture
 
 ## 1. Overview
 
-TrueReach is a booking, safety, driver-dispatch and business-management platform for
+Halo is a booking, safety, driver-dispatch and business-management platform for
 independent mobile massage workers and massage businesses. Version 1 is shipped as a
 **responsive Progressive Web App (PWA)** so a single codebase serves phone, tablet and
 desktop. Native iOS/Android apps are a later-release concern (see `09-folder-structure.md`

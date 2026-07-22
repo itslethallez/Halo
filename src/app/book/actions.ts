@@ -50,7 +50,7 @@ export async function submitBookingRequestAction(formData: FormData): Promise<Cr
   if (!client) {
     const passwordHash = await hashPassword(crypto.randomUUID());
     const user = await prisma.user.create({
-      data: { businessId: worker.businessId, email: email || `${crypto.randomUUID()}@guest.truereach.example`, passwordHash, name: fullName, phone, role: "CLIENT" },
+      data: { businessId: worker.businessId, email: email || `${crypto.randomUUID()}@guest.halo.example`, passwordHash, name: fullName, phone, role: "CLIENT" },
     });
     client = await prisma.client.create({
       data: { businessId: worker.businessId, userId: user.id, fullName, phone, email, verifiedContact: false },

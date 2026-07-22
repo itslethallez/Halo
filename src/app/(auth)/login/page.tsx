@@ -11,7 +11,7 @@ export default function LoginPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-sand-50 px-4">
       <div className="card w-full max-w-sm p-8">
-        <h1 className="text-xl font-semibold text-brand-900">Sign in to TrueReach</h1>
+        <h1 className="text-xl font-semibold text-brand-900">Sign in to Halo</h1>
         <p className="mt-1 text-sm text-ink-600">Discreet, secure access for your team and clients.</p>
 
         <form action={formAction} className="mt-6 space-y-4">

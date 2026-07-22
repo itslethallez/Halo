@@ -5,7 +5,7 @@ export default function LandingPage() {
   return (
     <main className="min-h-screen bg-sand-50">
       <div className="mx-auto max-w-4xl px-6 py-20">
-        <p className="text-sm font-medium uppercase tracking-wide text-brand-700">TrueReach</p>
+        <p className="text-sm font-medium uppercase tracking-wide text-brand-700">Halo</p>
         <h1 className="mt-3 text-4xl font-semibold text-ink-900 sm:text-5xl">
           Booking, safety and business management for mobile massage.
         </h1>

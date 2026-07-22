@@ -16,7 +16,7 @@ export class WebPushProvider implements PushProvider {
   private configure(): void {
     const publicKey = requireEnv("WEB_PUSH_PUBLIC_KEY");
     const privateKey = requireEnv("WEB_PUSH_PRIVATE_KEY");
-    webpush.setVapidDetails("mailto:support@truereach.example", publicKey, privateKey);
+    webpush.setVapidDetails("mailto:support@halo.example", publicKey, privateKey);
   }
 
   async sendPush(subscription: PushSubscription, title: string, body: string): Promise<{ id: string }> {

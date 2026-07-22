@@ -18,7 +18,7 @@ function daysFromNow(days: number, hour = 10, minute = 0): Date {
 }
 
 async function main() {
-  console.log("Seeding TrueReach demo data...");
+  console.log("Seeding Halo demo data...");
 
   const devPasswordHash = await hashPassword("DemoPass123!");
 
