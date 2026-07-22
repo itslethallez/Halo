@@ -4,6 +4,7 @@ import { getBusinessFinancialReport } from "@/services/reportingService";
 import { formatCents } from "@/lib/currency";
 import { DashboardShell } from "@/components/DashboardShell";
 import { StatusPill } from "@/components/StatusPill";
+import { NAV_COLOR_CLASSES, type NavColor } from "@/components/navItems";
 
 export default async function AdminDashboardPage() {
   const authzUser = await getCurrentAuthzUser();
@@ -68,7 +69,7 @@ export default async function AdminDashboardPage() {
       </section>
 
       <section id="bookings" className="scroll-mt-8 space-y-4">
-        <SectionHeading title="Bookings" />
+        <SectionHeading title="Bookings" color="hue-bookings" />
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <Panel title={`Today's bookings (${todaysBookings.length})`}>
             {todaysBookings.length === 0 && <Empty text="No bookings scheduled for today." />}
@@ -123,7 +124,7 @@ export default async function AdminDashboardPage() {
       </section>
 
       <section id="safety" className="scroll-mt-8 space-y-4">
-        <SectionHeading title="Safety" />
+        <SectionHeading title="Safety" color="hue-safety" />
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <Panel title={`Safety reviews (${safetyReviews.length})`} alert={safetyReviews.length > 0}>
             {safetyReviews.length === 0 && <Empty text="No open safety reviews." />}
@@ -166,7 +167,7 @@ export default async function AdminDashboardPage() {
       </section>
 
       <section id="drivers" className="scroll-mt-8 space-y-4">
-        <SectionHeading title="Drivers" />
+        <SectionHeading title="Drivers" color="hue-drivers" />
         <Panel title="Worker & driver availability">
           <div className="grid grid-cols-1 gap-4 p-4 text-sm sm:grid-cols-2">
             <div>
@@ -186,7 +187,7 @@ export default async function AdminDashboardPage() {
       </section>
 
       <section id="reports" className="scroll-mt-8 space-y-4">
-        <SectionHeading title="Reports" />
+        <SectionHeading title="Reports" color="hue-reports" />
         <Panel title={`Unpaid balances (${unpaidWithBalance.length})`}>
           {unpaidWithBalance.length === 0 && <Empty text="Everyone is paid up." />}
           {unpaidWithBalance.map((b) => (
@@ -204,8 +205,14 @@ export default async function AdminDashboardPage() {
   );
 }
 
-function SectionHeading({ title }: { title: string }) {
-  return <h2 className="font-display text-xl font-semibold text-text">{title}</h2>;
+function SectionHeading({ title, color }: { title: string; color: NavColor }) {
+  const classes = NAV_COLOR_CLASSES[color];
+  return (
+    <h2 className="flex items-center gap-2 font-display text-xl font-semibold text-text">
+      <span className={`h-2.5 w-2.5 rounded-full ${classes.solid}`} />
+      {title}
+    </h2>
+  );
 }
 
 function StatCard({ label, value }: { label: string; value: string }) {

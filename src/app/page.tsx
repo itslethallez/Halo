@@ -25,21 +25,39 @@ export default function LandingPage() {
         </div>
 
         <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <Feature icon={<CalendarClock className="h-5 w-5" />} title="Never double-booked" text="Real availability, travel time and setup/pack-down are checked before any slot is offered." />
-          <Feature icon={<ShieldCheck className="h-5 w-5" />} title="Built-in worker safety" text="Check-ins, an emergency button and a private post-service survey after every job." />
-          <Feature icon={<Car className="h-5 w-5" />} title="Smart driver dispatch" text="Drivers are matched by availability, area, rating and cost — assign manually any time." />
-          <Feature icon={<LineChart className="h-5 w-5" />} title="Clear business numbers" text="Revenue, worker and driver earnings, and profit — reported honestly, exportable to CSV." />
+          <Feature icon={<CalendarClock className="h-5 w-5" />} color="hue-bookings" title="Never double-booked" text="Real availability, travel time and setup/pack-down are checked before any slot is offered." />
+          <Feature icon={<ShieldCheck className="h-5 w-5" />} color="hue-safety" title="Built-in worker safety" text="Check-ins, an emergency button and a private post-service survey after every job." />
+          <Feature icon={<Car className="h-5 w-5" />} color="hue-drivers" title="Smart driver dispatch" text="Drivers are matched by availability, area, rating and cost — assign manually any time." />
+          <Feature icon={<LineChart className="h-5 w-5" />} color="hue-reports" title="Clear business numbers" text="Revenue, worker and driver earnings, and profit — reported honestly, exportable to CSV." />
         </div>
       </div>
     </main>
   );
 }
 
-function Feature({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) {
+const FEATURE_COLOR_CLASSES = {
+  "hue-bookings": { text: "text-hue-bookings", bg: "bg-hue-bookings/15" },
+  "hue-safety": { text: "text-hue-safety", bg: "bg-hue-safety/15" },
+  "hue-drivers": { text: "text-hue-drivers", bg: "bg-hue-drivers/15" },
+  "hue-reports": { text: "text-hue-reports", bg: "bg-hue-reports/15" },
+} as const;
+
+function Feature({
+  icon,
+  color,
+  title,
+  text,
+}: {
+  icon: React.ReactNode;
+  color: keyof typeof FEATURE_COLOR_CLASSES;
+  title: string;
+  text: string;
+}) {
+  const classes = FEATURE_COLOR_CLASSES[color];
   return (
     <div className="card p-5">
-      <div className="flex items-center gap-2 text-accent">
-        {icon}
+      <div className="flex items-center gap-3">
+        <span className={`flex h-9 w-9 items-center justify-center rounded-full ${classes.bg} ${classes.text}`}>{icon}</span>
         <h3 className="font-medium text-text">{title}</h3>
       </div>
       <p className="mt-2 text-sm text-text-muted">{text}</p>

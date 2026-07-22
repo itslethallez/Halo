@@ -27,6 +27,15 @@
   --halo-gold-hair:rgba(233,185,73,.18); /* hairline on dark        */
   --halo-white-hair:rgba(255,255,255,.08);
 
+  /* ---- section hues — navigation/content wayfinding colour, distinct from
+     --accent (gold, reserved for primary actions/links) and --status-safe
+     (teal, reserved for safe/active status). Purely decorative/identity use. */
+  --hue-bookings:#F2935E;   /* warm coral   */
+  --hue-safety:#E0708A;     /* soft rose    */
+  --hue-drivers:#7C93F0;    /* periwinkle   */
+  --hue-reports:#B18CF0;    /* soft violet  */
+  --hue-messages:#6FCF97;   /* mint green   */
+
   /* ---- semantic roles (use these in components) ---- */
   --bg:var(--halo-ink);
   --surface:var(--halo-ink-2);
