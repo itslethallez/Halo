@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { getCurrentAuthzUser } from "@/lib/auth/currentUser";
 import { formatCents } from "@/lib/currency";
-import { DashboardHeader } from "@/components/DashboardHeader";
+import { DashboardShell } from "@/components/DashboardShell";
 import { toDriverJobView } from "@/services/driverService";
 import { advanceTripStatusAction, respondToOfferAction } from "./actions";
 import type { DriverJobStatus } from "@prisma/client";
@@ -40,22 +40,21 @@ export default async function DriverDashboardPage() {
   const nextJob = todaysJobs.find((j) => !["COMPLETED", "CANCELLED", "DECLINED"].includes(j.status));
 
   return (
-    <div className="min-h-screen bg-bg">
-      <DashboardHeader title="Driver dashboard" subtitle="Your transport jobs for today" />
-      <main className="mx-auto max-w-3xl space-y-8 px-6 py-8">
-        <section className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-          <StatCard label="Weekly earnings" value={formatCents(weeklyEarningsCents)} />
-          <StatCard label="Completed this week" value={String(completedThisWeek.length)} />
-          <StatCard label="New offers" value={String(offeredJobs.length)} alert={offeredJobs.length > 0} />
-        </section>
+    <DashboardShell role="DRIVER" title="Driver dashboard" subtitle="Your transport jobs for today">
+      <section className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+        <StatCard label="Weekly earnings" value={formatCents(weeklyEarningsCents)} />
+        <StatCard label="Completed this week" value={String(completedThisWeek.length)} />
+        <StatCard label="New offers" value={String(offeredJobs.length)} alert={offeredJobs.length > 0} />
+      </section>
 
-        {nextJob && (
-          <div className="card border-border p-5">
-            <p className="text-xs font-medium uppercase tracking-wide text-accent">Next pickup</p>
-            <JobCard job={toDriverJobView(nextJob)} />
-          </div>
-        )}
+      {nextJob && (
+        <div className="card border-border p-5">
+          <p className="text-xs font-medium uppercase tracking-wide text-accent">Next pickup</p>
+          <JobCard job={toDriverJobView(nextJob)} />
+        </div>
+      )}
 
+      <section id="jobs" className="scroll-mt-8 space-y-8">
         <Panel title={`Available offers (${offeredJobs.length})`} alert={offeredJobs.length > 0}>
           {offeredJobs.length === 0 && <Empty text="No new job offers." />}
           {offeredJobs.map((job) => (
@@ -88,8 +87,8 @@ export default async function DriverDashboardPage() {
             </div>
           ))}
         </Panel>
-      </main>
-    </div>
+      </section>
+    </DashboardShell>
   );
 }
 
